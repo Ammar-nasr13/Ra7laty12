@@ -16,6 +16,8 @@ cmds = [
 cmds = [
     "npm run build",
     "touch database/database.sqlite",
-    "php artisan migrate --force --seed"
-    
+    "chmod -R 777 database",
+    "php artisan migrate --force --seed",
+    "chmod 777 database/database.sqlite",
+    "chmod -R 777 storage bootstrap/cache"
 ]
