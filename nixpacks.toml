@@ -2,10 +2,20 @@
 NIXPACKS_PHP_ROOT_DIR = "/app/public"
 NIXPACKS_PHP_FALLBACK_PATH = "/index.php"
 NIXPACKS_NODE_VERSION = "22"
+DB_CONNECTION = "sqlite"
+DB_DATABASE = "/app/database/database.sqlite"
 
 [phases.install]
 cmds = [
     "mkdir -p /var/log/nginx && mkdir -p /var/cache/nginx",
     "composer install --ignore-platform-reqs",
     "npm install"
+]
+
+[phases.build]
+cmds = [
+    "npm run build",
+    "touch database/database.sqlite",
+    "php artisan migrate --force --seed"
+    
 ]
