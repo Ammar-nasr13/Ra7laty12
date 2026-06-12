@@ -1,0 +1,10 @@
+node_modules
+vendor
+.git
+.env
+*.zip
+storage.zip
+vendor.zip
+.nixpacks
+.phpunit.result.cache
+tests
