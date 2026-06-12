@@ -1,0 +1,933 @@
+@import 'tailwindcss';
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+@source '../**/*.blade.php';
+@source '../**/*.js';
+
+@theme {
+    --font-sans: 'Cairo', 'Instrument Sans', ui-sans-serif, system-ui, sans-serif;
+
+    /* Egyptian Color Palette */
+    --color-gold:        #C5A028;
+    --color-gold-light:  #F0D060;
+    --color-gold-dark:   #9A7A10;
+    --color-nile:        #1A3A5C;
+    --color-nile-light:  #2A5A8C;
+    --color-sand:        #F7EDD5;
+    --color-sand-dark:   #E8D5A3;
+    --color-papyrus:     #D4B483;
+    --color-egypt-red:   #CE1126;
+    --color-egypt-black: #0A0A0A;
+}
+
+/* ========================
+   Base & Reset
+   ======================== */
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: 'Cairo', sans-serif;
+    background-color: #FDFAF4;
+    color: #1A1A1A;
+    overflow-x: hidden;
+}
+
+/* ========================
+   Egyptian Decorative Elements
+   ======================== */
+
+/* Hieroglyphic gold border */
+.egypt-border-top {
+    border-top: 4px solid transparent;
+    border-image: repeating-linear-gradient(
+        90deg,
+        #C5A028 0 12px,
+        #F0D060 12px 20px,
+        #9A7A10 20px 28px,
+        transparent 28px 36px
+    ) 1;
+}
+
+.egypt-border-bottom {
+    border-bottom: 4px solid transparent;
+    border-image: repeating-linear-gradient(
+        90deg,
+        #C5A028 0 12px,
+        #F0D060 12px 20px,
+        #9A7A10 20px 28px,
+        transparent 28px 36px
+    ) 1;
+}
+
+/* Gold shimmer text */
+.text-gold-gradient {
+    background: linear-gradient(135deg, #C5A028, #F0D060, #9A7A10);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* Papyrus background texture */
+.papyrus-bg {
+    background-color: #F7EDD5;
+    background-image:
+        repeating-linear-gradient(
+            45deg,
+            rgba(196, 160, 40, 0.04) 0px, rgba(196, 160, 40, 0.04) 1px,
+            transparent 0px, transparent 50%
+        ),
+        repeating-linear-gradient(
+            -45deg,
+            rgba(196, 160, 40, 0.04) 0px, rgba(196, 160, 40, 0.04) 1px,
+            transparent 0px, transparent 50%
+        );
+    background-size: 20px 20px;
+}
+
+/* ========================
+   Navbar
+   ======================== */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    background: rgba(26, 58, 92, 0.95);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    transition: all 0.3s ease;
+}
+
+.navbar.scrolled {
+    background: rgba(26, 58, 92, 0.99);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+}
+
+.nav-link {
+    color: #E8D5A3;
+    text-decoration: none;
+    font-weight: 500;
+    padding: 0.4rem 0.8rem;
+    border-radius: 6px;
+    transition: all 0.25s ease;
+    position: relative;
+}
+
+.nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 50%;
+    width: 0;
+    height: 2px;
+    background: #C5A028;
+    transition: all 0.3s ease;
+    transform: translateX(-50%);
+}
+
+.nav-link:hover {
+    color: #F0D060;
+}
+
+.nav-link:hover::after {
+    width: 80%;
+}
+
+.btn-gold {
+    background: linear-gradient(135deg, #C5A028, #F0D060);
+    color: #1A1A1A;
+    font-weight: 700;
+    padding: 0.5rem 1.4rem;
+    border-radius: 30px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+    box-shadow: 0 4px 15px rgba(197, 160, 40, 0.3);
+}
+
+.btn-gold:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(197, 160, 40, 0.5);
+}
+
+.btn-outline-gold {
+    background: transparent;
+    color: #F0D060;
+    font-weight: 600;
+    padding: 0.5rem 1.4rem;
+    border-radius: 30px;
+    border: 2px solid #C5A028;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.btn-outline-gold:hover {
+    background: #C5A028;
+    color: #1A1A1A;
+}
+
+.lang-btn {
+    background: rgba(197, 160, 40, 0.15);
+    color: #F0D060;
+    border: 1px solid rgba(197, 160, 40, 0.4);
+    border-radius: 6px;
+    padding: 0.3rem 0.7rem;
+    font-size: 0.8rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.lang-btn:hover {
+    background: rgba(197, 160, 40, 0.3);
+}
+
+/* ========================
+   Hero Section
+   ======================== */
+.hero-section {
+    min-height: 100vh;
+    background: linear-gradient(160deg, #0D2137 0%, #1A3A5C 40%, #2A5A8C 70%, #1A3A5C 100%);
+    position: relative;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+}
+
+.hero-section::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 70% 50%, rgba(197, 160, 40, 0.08) 0%, transparent 60%);
+    pointer-events: none;
+}
+
+/* Desert ground line */
+.hero-ground {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 120px;
+    background: linear-gradient(180deg, transparent, rgba(247, 237, 213, 0.12));
+}
+
+/* Stars animation */
+.hero-stars {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+}
+
+.star {
+    position: absolute;
+    background: white;
+    border-radius: 50%;
+    animation: twinkle 3s ease-in-out infinite;
+}
+
+@keyframes twinkle {
+    0%, 100% { opacity: 0.3; transform: scale(1); }
+    50%       { opacity: 1;   transform: scale(1.3); }
+}
+
+/* ========================
+   Stats Bar
+   ======================== */
+.stats-bar {
+    background: linear-gradient(135deg, #1A3A5C, #0D2137);
+    padding: 2rem 0;
+    border-top: 3px solid #C5A028;
+    border-bottom: 3px solid #C5A028;
+}
+
+.stat-number {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: #F0D060;
+    line-height: 1;
+}
+
+/* ========================
+   Section Headings
+   ======================== */
+.section-title {
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    font-weight: 800;
+    color: #1A3A5C;
+    position: relative;
+    display: inline-block;
+}
+
+.section-title::after {
+    content: '';
+    display: block;
+    width: 60px;
+    height: 4px;
+    background: linear-gradient(90deg, #C5A028, #F0D060);
+    border-radius: 2px;
+    margin: 0.5rem auto 0;
+}
+
+.section-badge {
+    display: inline-block;
+    background: rgba(197, 160, 40, 0.12);
+    color: #9A7A10;
+    border: 1px solid rgba(197, 160, 40, 0.3);
+    border-radius: 20px;
+    padding: 0.25rem 1rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.75rem;
+}
+
+/* ========================
+   Trip Cards
+   ======================== */
+.trip-card {
+    border-radius: 16px;
+    overflow: hidden;
+    background: white;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    transition: all 0.35s ease;
+    cursor: pointer;
+    position: relative;
+}
+
+.trip-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 16px 40px rgba(0,0,0,0.15);
+}
+
+.trip-card-thumb {
+    height: 200px;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: flex-end;
+    padding: 1rem;
+}
+
+.trip-card-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.05) 50%, rgba(0,0,0,0) 100%);
+    transition: background 0.35s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.trip-card:hover .trip-card-overlay {
+    background: linear-gradient(to bottom, rgba(0,0,0,0.25) 0%, rgba(197,160,40,0.1) 100%);
+}
+
+.trip-card-price {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: rgba(255,255,255,0.95);
+    color: #C5A028;
+    font-weight: 800;
+    font-size: 0.9rem;
+    padding: 0.25rem 0.7rem;
+    border-radius: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+[dir="rtl"] .trip-card-price { right: auto; left: 1rem; }
+
+.trip-card-body {
+    padding: 1.25rem;
+}
+
+.trip-card-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #1A3A5C;
+    margin-bottom: 0.3rem;
+}
+
+.trip-card-meta {
+    color: #666;
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.trip-card-footer {
+    padding: 0.75rem 1.25rem;
+    border-top: 1px solid #f0f0f0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+/* Egyptian destination cards */
+.egypt-dest-card {
+    border-radius: 20px;
+    overflow: hidden;
+    position: relative;
+    min-height: 320px;
+    display: flex;
+    align-items: flex-end;
+    cursor: pointer;
+    transition: transform 0.35s ease;
+}
+
+.egypt-dest-card:hover {
+    transform: scale(1.02);
+}
+
+.egypt-dest-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.55) 60%, rgba(0,0,0,0.82) 100%);
+}
+
+.egypt-dest-content {
+    position: relative;
+    z-index: 1;
+    padding: 1.5rem;
+    color: white;
+    width: 100%;
+}
+
+/* ========================
+   Filter Tabs
+   ======================== */
+.filter-tabs {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.filter-tab {
+    padding: 0.5rem 1.4rem;
+    border-radius: 30px;
+    border: 2px solid #E8D5A3;
+    background: white;
+    color: #666;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    font-size: 0.9rem;
+}
+
+.filter-tab:hover {
+    border-color: #C5A028;
+    color: #C5A028;
+}
+
+.filter-tab.active {
+    background: linear-gradient(135deg, #C5A028, #F0D060);
+    border-color: #C5A028;
+    color: #1A1A1A;
+    box-shadow: 0 4px 12px rgba(197, 160, 40, 0.35);
+}
+
+/* ========================
+   Survey CTA Section
+   ======================== */
+.survey-cta {
+    background: linear-gradient(135deg, #1A3A5C 0%, #0D2137 100%);
+    position: relative;
+    overflow: hidden;
+}
+
+.survey-cta::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -20%;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(197, 160, 40, 0.08) 0%, transparent 70%);
+    pointer-events: none;
+}
+
+/* ========================
+   Survey Form (multi-step)
+   ======================== */
+.survey-wrapper {
+    background: white;
+    border-radius: 24px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+    overflow: hidden;
+    max-width: 680px;
+    margin: 0 auto;
+}
+
+.survey-header {
+    background: linear-gradient(135deg, #1A3A5C, #2A5A8C);
+    padding: 2rem;
+    color: white;
+    text-align: center;
+}
+
+.survey-progress-bar {
+    height: 6px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 3px;
+    margin-top: 1.5rem;
+    overflow: hidden;
+}
+
+.survey-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #C5A028, #F0D060);
+    border-radius: 3px;
+    transition: width 0.4s ease;
+}
+
+.survey-step {
+    display: none;
+    padding: 2rem;
+}
+
+.survey-step.active {
+    display: block;
+    animation: fadeSlideIn 0.3s ease;
+}
+
+@keyframes fadeSlideIn {
+    from { opacity: 0; transform: translateX(20px); }
+    to   { opacity: 1; transform: translateX(0); }
+}
+
+[dir="rtl"] .survey-step.active {
+    animation: fadeSlideInRtl 0.3s ease;
+}
+
+@keyframes fadeSlideInRtl {
+    from { opacity: 0; transform: translateX(-20px); }
+    to   { opacity: 1; transform: translateX(0); }
+}
+
+.survey-input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 2px solid #E8D5A3;
+    border-radius: 10px;
+    font-family: inherit;
+    font-size: 1rem;
+    color: #1A1A1A;
+    background: #FDFAF4;
+    transition: border-color 0.25s ease;
+    outline: none;
+}
+
+.survey-input:focus {
+    border-color: #C5A028;
+    background: white;
+}
+
+.survey-label {
+    display: block;
+    font-weight: 600;
+    color: #1A3A5C;
+    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
+}
+
+.survey-option-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+}
+
+.survey-option {
+    border: 2px solid #E8D5A3;
+    border-radius: 12px;
+    padding: 1rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    background: white;
+    user-select: none;
+}
+
+.survey-option:hover {
+    border-color: #C5A028;
+    background: rgba(197, 160, 40, 0.05);
+}
+
+.survey-option.selected {
+    border-color: #C5A028;
+    background: rgba(197, 160, 40, 0.1);
+    box-shadow: 0 2px 12px rgba(197, 160, 40, 0.2);
+}
+
+.survey-option .option-icon {
+    font-size: 2rem;
+    display: block;
+    margin-bottom: 0.4rem;
+}
+
+.survey-option .option-label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #1A3A5C;
+}
+
+.survey-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.25rem 2rem;
+    border-top: 1px solid #f0f0f0;
+    background: #FDFAF4;
+}
+
+.btn-survey-next {
+    background: linear-gradient(135deg, #C5A028, #F0D060);
+    color: #1A1A1A;
+    font-weight: 700;
+    padding: 0.65rem 2rem;
+    border-radius: 30px;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+    font-family: inherit;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(197, 160, 40, 0.3);
+}
+
+.btn-survey-next:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(197, 160, 40, 0.45);
+}
+
+.btn-survey-back {
+    background: transparent;
+    color: #888;
+    font-weight: 600;
+    padding: 0.65rem 1.5rem;
+    border-radius: 30px;
+    border: 2px solid #ddd;
+    cursor: pointer;
+    font-size: 1rem;
+    font-family: inherit;
+    transition: all 0.25s ease;
+}
+
+.btn-survey-back:hover {
+    border-color: #999;
+    color: #555;
+}
+
+/* ========================
+   Results Page
+   ======================== */
+.results-hero {
+    background: linear-gradient(135deg, #1A3A5C, #2A5A8C);
+    padding: 5rem 1rem 3rem;
+    text-align: center;
+    color: white;
+}
+
+.match-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: rgba(197, 160, 40, 0.2);
+    border: 1px solid rgba(197, 160, 40, 0.4);
+    color: #F0D060;
+    border-radius: 20px;
+    padding: 0.3rem 1rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+/* ========================
+   Testimonials
+   ======================== */
+.testimonial-card {
+    background: white;
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+    border-top: 4px solid #C5A028;
+    transition: transform 0.3s ease;
+}
+
+.testimonial-card:hover {
+    transform: translateY(-4px);
+}
+
+.stars {
+    color: #F0D060;
+    font-size: 1.1rem;
+    letter-spacing: 2px;
+}
+
+/* ========================
+   Ticker / Marquee
+   ======================== */
+.ticker-wrap {
+    background: linear-gradient(90deg, #0D2137, #1A3A5C, #0D2137);
+    padding: 0.6rem 0;
+    overflow: hidden;
+    border-top: 2px solid #C5A028;
+    border-bottom: 2px solid #C5A028;
+}
+
+.ticker-track {
+    display: inline-flex;
+    gap: 3rem;
+    animation: ticker 30s linear infinite;
+    white-space: nowrap;
+}
+
+.ticker-track:hover { animation-play-state: paused; }
+
+@keyframes ticker {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+}
+
+[dir="rtl"] .ticker-track {
+    animation: tickerRtl 30s linear infinite;
+}
+
+@keyframes tickerRtl {
+    from { transform: translateX(0); }
+    to   { transform: translateX(50%); }
+}
+
+.ticker-item {
+    color: #F0D060;
+    font-weight: 600;
+    font-size: 0.9rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* ========================
+   Newsletter
+   ======================== */
+.newsletter-section {
+    background: #F7EDD5;
+}
+
+.newsletter-input {
+    flex: 1;
+    padding: 0.75rem 1.2rem;
+    border: 2px solid #E8D5A3;
+    border-radius: 30px 0 0 30px;
+    outline: none;
+    font-family: inherit;
+    font-size: 0.95rem;
+    background: white;
+    transition: border-color 0.25s;
+}
+
+[dir="rtl"] .newsletter-input {
+    border-radius: 0 30px 30px 0;
+}
+
+.newsletter-input:focus {
+    border-color: #C5A028;
+}
+
+.newsletter-btn {
+    background: linear-gradient(135deg, #C5A028, #F0D060);
+    color: #1A1A1A;
+    font-weight: 700;
+    padding: 0.75rem 1.8rem;
+    border: none;
+    border-radius: 0 30px 30px 0;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.3s ease;
+}
+
+[dir="rtl"] .newsletter-btn {
+    border-radius: 30px 0 0 30px;
+}
+
+.newsletter-btn:hover {
+    filter: brightness(1.1);
+}
+
+/* ========================
+   WhatsApp Floating Button
+   ======================== */
+.whatsapp-float {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    z-index: 999;
+    width: 60px;
+    height: 60px;
+    background: #25D366;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 6px 24px rgba(37, 211, 102, 0.4);
+    text-decoration: none;
+    transition: all 0.3s ease;
+    animation: pulse-green 2s ease-in-out infinite;
+}
+
+[dir="rtl"] .whatsapp-float { right: auto; left: 2rem; }
+
+.whatsapp-float:hover {
+    transform: scale(1.12);
+    box-shadow: 0 8px 30px rgba(37, 211, 102, 0.55);
+}
+
+@keyframes pulse-green {
+    0%, 100% { box-shadow: 0 6px 24px rgba(37, 211, 102, 0.4); }
+    50%       { box-shadow: 0 6px 36px rgba(37, 211, 102, 0.7); }
+}
+
+/* ========================
+   Footer
+   ======================== */
+.site-footer {
+    background: #0D2137;
+    color: #C8B87A;
+    padding: 3rem 1rem 1.5rem;
+}
+
+.footer-link {
+    color: #8A9BB5;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: color 0.2s ease;
+}
+
+.footer-link:hover { color: #F0D060; }
+
+/* ========================
+   Utilities
+   ======================== */
+.fade-up {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.fade-up.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Page padding for fixed navbar */
+.page-content {
+    padding-top: 70px;
+}
+
+/* Responsive grid for trips */
+.trips-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+}
+
+/* Egyptian flag inline SVG */
+.egypt-flag-bar {
+    display: flex;
+    width: 36px;
+    height: 22px;
+    border-radius: 3px;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+/* Divider with pyramid icon */
+.pyramid-divider {
+    text-align: center;
+    margin: 1rem 0;
+    color: #C5A028;
+    font-size: 1.5rem;
+    letter-spacing: 0.3rem;
+    opacity: 0.6;
+}
+
+/* ========================
+   Accessibility
+   ======================== */
+
+/* Skip to main content link */
+.skip-link {
+    position: absolute;
+    top: -40px;
+    inset-inline-start: 0;
+    background: #1A3A5C;
+    color: #F0D060;
+    font-weight: 700;
+    padding: 0.6rem 1.2rem;
+    border-radius: 0 0 6px 0;
+    z-index: 10000;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: top 0.2s ease;
+}
+.skip-link:focus { top: 0; }
+
+/* Focus-visible: visible keyboard focus on all interactive elements */
+:focus-visible {
+    outline: 3px solid #C5A028;
+    outline-offset: 3px;
+}
+
+/* Override outline:none with focus-visible for survey inputs */
+.survey-input:focus-visible {
+    outline: 3px solid #C5A028;
+    outline-offset: 2px;
+    border-color: #C5A028;
+}
+
+/* Survey options keyboard focus */
+.survey-option:focus-visible {
+    outline: 3px solid #C5A028;
+    outline-offset: 3px;
+    border-color: #C5A028;
+}
+
+/* Newsletter input focus */
+.newsletter-input:focus-visible {
+    outline: 3px solid #C5A028;
+    outline-offset: 2px;
+}
+
+/* Nav links focus */
+.nav-link:focus-visible,
+.footer-link:focus-visible {
+    outline: 3px solid #C5A028;
+    outline-offset: 3px;
+    border-radius: 4px;
+}
+
+/* Buttons focus */
+.btn-gold:focus-visible,
+.lang-btn:focus-visible {
+    outline: 3px solid #F0D060;
+    outline-offset: 3px;
+}
+
+/* WhatsApp float focus */
+.whatsapp-float:focus-visible {
+    outline: 3px solid #ffffff;
+    outline-offset: 4px;
+}
