@@ -43,6 +43,14 @@ echo "<li><strong>APP_ENV:</strong> " . htmlspecialchars($env['APP_ENV'] ?? 'not
 echo "<li><strong>APP_DEBUG:</strong> " . htmlspecialchars($env['APP_DEBUG'] ?? 'not set') . "</li>";
 echo "</ul>";
 
+// Print User and Process Info
+echo "<h3>System Process & File Ownership Info:</h3>";
+$currentUser = function_exists('posix_getpwuid') && function_exists('posix_geteuid') ? posix_getpwuid(posix_geteuid())['name'] : 'unknown';
+echo "<ul>";
+echo "<li><strong>PHP Process User (posix):</strong> " . htmlspecialchars($currentUser) . "</li>";
+echo "<li><strong>PHP Process User (whoami):</strong> " . htmlspecialchars(exec('whoami')) . "</li>";
+echo "</ul>";
+
 // 2. Attempt Connection
 try {
     if ($driver === 'sqlite') {
@@ -56,6 +64,22 @@ try {
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         echo "<p style='color:green;'><strong>SQLite Connection successful!</strong></p>";
         
+        // Print SQLite file ownership and permissions
+        if (file_exists($dbPath)) {
+            $ownerId = fileowner($dbPath);
+            $ownerName = function_exists('posix_getpwuid') ? posix_getpwuid($ownerId)['name'] : $ownerId;
+            $perms = substr(sprintf('%o', fileperms($dbPath)), -4);
+            echo "<p><strong>Database File (database.sqlite):</strong> Permissions = <code>$perms</code>, Owner = <code>$ownerName</code></p>";
+        }
+        
+        $dbDir = dirname($dbPath);
+        if (file_exists($dbDir)) {
+            $dirOwnerId = fileowner($dbDir);
+            $dirOwnerName = function_exists('posix_getpwuid') ? posix_getpwuid($dirOwnerId)['name'] : $dirOwnerId;
+            $dirPerms = substr(sprintf('%o', fileperms($dbDir)), -4);
+            echo "<p><strong>Database Directory (database/):</strong> Permissions = <code>$dirPerms</code>, Owner = <code>$dirOwnerName</code></p>";
+        }
+        
         // Write Test
         echo "<h3>Testing Write Permissions:</h3>";
         $testTable = "write_test_table_" . time();
@@ -66,7 +90,7 @@ try {
             echo "<p style='color:green;'><strong>WRITE TEST SUCCESSFUL!</strong> Database is writable.</p>";
         } catch (\Exception $writeEx) {
             echo "<p style='color:red;'><strong>WRITE TEST FAILED!</strong> " . htmlspecialchars($writeEx->getMessage()) . "</p>";
-            echo "<p>Please ensure that the database file <code>" . htmlspecialchars($dbPath) . "</code> AND its parent folder <code>" . htmlspecialchars(dirname($dbPath)) . "</code> have write permissions (e.g. <code>chmod 777</code> or owned by web server user).</p>";
+            echo "<p>Please ensure that the database file <code>" . htmlspecialchars($dbPath) . "</code> AND its parent folder <code>" . htmlspecialchars($dbDir) . "</code> have write permissions (e.g. <code>chmod 777</code> or owned by web server user).</p>";
         }
         
         // Check tables

@@ -19,5 +19,6 @@ cmds = [
     "php artisan migrate --force --seed",
     "chmod 777 database/database.sqlite",
     "php artisan storage:link",
-    "chmod -R 777 storage bootstrap/cache"
+    "chmod -R 777 storage bootstrap/cache",
+    "chown -R nixpacks:nixpacks database storage bootstrap/cache"
 ]
