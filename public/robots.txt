@@ -5,4 +5,4 @@ Disallow: /payment/
 Disallow: /pay/
 Disallow: /survey/results/
 
-Sitemap: https://rahalaty.online/sitemap.xml
+Sitemap: https://ra7laty.com/sitemap.xml

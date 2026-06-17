@@ -40,7 +40,7 @@
   "provider": {
     "@@type": "TravelAgency",
     "name": "رحلاتي",
-    "url": "https://rahalaty.online"
+    "url": "{{ url('/') }}"
   }
 }
 </script>

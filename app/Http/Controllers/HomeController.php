@@ -24,8 +24,9 @@ class HomeController extends Controller
     public function sitemap()
     {
         $trips = Trip::active()->orderBy('sort_order')->get();
+        $destinations = Destination::orderBy('sort_order')->get();
         return response()
-            ->view('sitemap', compact('trips'))
+            ->view('sitemap', compact('trips', 'destinations'))
             ->header('Content-Type', 'application/xml');
     }
 

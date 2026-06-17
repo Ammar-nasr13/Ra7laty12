@@ -7,10 +7,17 @@
     $name  = $destination->getTranslation('name', $lang);
     $desc  = $destination->getTranslation('description', $lang);
     $img   = $destination->getFirstMedia('image');
+
+    $seoTitle = $destination->getTranslation('meta_title', $lang) ?: $name;
+    $seoDesc  = $destination->getTranslation('meta_desc', $lang) ?: Str::limit(strip_tags($desc), 155);
+    $seoKeywords = $destination->getTranslation('meta_keywords', $lang) ?: ($isAr
+        ? 'وجهة, ' . $name . ', رحلاتي, سياحة'
+        : 'destination, ' . $name . ', rahalaty, tourism');
 @endphp
 
-@section('title', $name . ($isAr ? ' — رحلاتي' : ' — Rahalaty'))
-@section('meta_desc', Str::limit(strip_tags($desc), 155))
+@section('title', $seoTitle . ($isAr ? ' — رحلاتي' : ' — Rahalaty'))
+@section('meta_desc', $seoDesc)
+@section('meta_keywords', $seoKeywords)
 
 @section('content')
 

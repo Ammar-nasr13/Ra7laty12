@@ -1,6 +1,8 @@
 @extends('layouts.app')
 
 @section('title', app()->getLocale() == 'ar' ? 'استبيان الرحلات — رحلاتي' : 'Trip Survey — Rehlatyy')
+@section('meta_desc', app()->getLocale() == 'ar' ? 'استبيان تفضيلات السفر من رحلاتي. أجب على بضعة أسئلة وسيقوم نظامنا الذكي باقتراح أفضل الرحلات المناسبة لك ميزانية ووجهة.' : 'Trip Survey by Rahalaty. Answer a few questions and our smart system will recommend the best trips matching your budget and preferences.')
+@section('meta_keywords', app()->getLocale() == 'ar' ? 'استبيان السفر, استبيان تفضيلات السفر, رحلاتي, اختيار وجهة سياحية' : 'trip survey, travel preferences, rahalaty, choose destination')
 
 @section('content')
 

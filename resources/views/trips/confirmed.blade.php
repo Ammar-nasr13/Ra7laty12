@@ -1,5 +1,6 @@
 @extends('layouts.app')
 @section('title', 'تم الحجز بنجاح — رحلاتي')
+@section('meta_robots', 'noindex, nofollow')
 
 @push('styles')
 <style>

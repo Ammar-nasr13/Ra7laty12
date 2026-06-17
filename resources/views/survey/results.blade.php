@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 @section('title', app()->getLocale() == 'ar' ? 'رحلاتك المقترحة — رحلاتي' : 'Your Recommended Trips — Rehlatyy')
+@section('meta_robots', 'noindex, nofollow')
 
 @section('content')
 

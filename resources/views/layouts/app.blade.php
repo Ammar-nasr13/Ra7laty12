@@ -14,7 +14,7 @@
     <link rel="alternate" hreflang="x-default" href="{{ url('/') }}">
 
     {{-- Additional SEO --}}
-    <meta name="keywords" content="@yield('meta_keywords', 'رحلاتي, rahalaty, rahalaty.online, سياحة, رحلات, مصر, egypt travel, tourism, hurghada, sharm el sheikh')">
+    <meta name="keywords" content="@yield('meta_keywords', 'رحلاتي, rahalaty, ra7laty.com, سياحة, رحلات, مصر, egypt travel, tourism, hurghada, sharm el sheikh')">
     <meta name="robots" content="@yield('meta_robots', 'index, follow')">
     <meta name="author" content="رحلاتي | Rahalaty">
     <meta name="geo.region" content="EG">
@@ -46,12 +46,12 @@
       "@@type": "TravelAgency",
       "name": "رحلاتي",
       "alternateName": "Rahalaty",
-      "url": "https://rahalaty.online",
-      "logo": "https://rahalaty.online/images/og-default.jpg",
+      "url": "{{ url('/') }}",
+      "logo": "{{ asset('images/og-default.jpg') }}",
       "address": {"@@type": "PostalAddress", "addressLocality": "Cairo", "addressCountry": "EG"},
       "telephone": "+201000000000",
-      "email": "info@rahalaty.online",
-      "sameAs": ["https://rahalaty.online"]
+      "email": "info@ra7laty.com",
+      "sameAs": ["{{ url('/') }}"]
     }
     </script>
 

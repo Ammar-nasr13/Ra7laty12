@@ -5,7 +5,7 @@
 @php $__homeDesc = app()->getLocale() == 'ar' ? 'رحلاتي | أفضل شركة سياحة مصرية — احجز رحلتك إلى الغردقة وشرم الشيخ والأقصر وأوروبا. أكثر من 16 وجهة سياحية بأسعار تنافسية وأجواء مصرية دافئة.' : 'Rahalaty | Best Egyptian Travel Agency — Book trips to Hurghada, Sharm El-Sheikh, Luxor, Europe & more. 16+ destinations at competitive prices with warm Egyptian hospitality.'; @endphp
 @section('meta_desc', $__homeDesc)
 
-@section('meta_keywords', 'رحلاتي, rahalaty, rahalaty.online, رحلات مصر, سياحة مصر, الغردقة, شرم الشيخ, الأقصر, أسوان, حجز رحلات, egypt travel, hurghada trips, sharm el sheikh, luxor aswan, cairo tours, سياحة داخلية, رحلات خارجية')
+@section('meta_keywords', 'رحلاتي, rahalaty, ra7laty.com, رحلات مصر, سياحة مصر, الغردقة, شرم الشيخ, الأقصر, أسوان, حجز رحلات, egypt travel, hurghada trips, sharm el sheikh, luxor aswan, cairo tours, سياحة داخلية, رحلات خارجية')
 
 @section('seo_head')
 <script type="application/ld+json">
@@ -13,10 +13,10 @@
   "@@context": "https://schema.org",
   "@@type": "WebSite",
   "name": "رحلاتي | Rahalaty",
-  "url": "https://rahalaty.online",
+  "url": "{{ url('/') }}",
   "potentialAction": {
     "@@type": "SearchAction",
-    "target": "https://rahalaty.online/?q={search_term_string}",
+    "target": "{{ url('/') }}/?q={search_term_string}",
     "query-input": "required name=search_term_string"
   }
 }
