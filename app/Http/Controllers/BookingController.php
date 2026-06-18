@@ -10,13 +10,19 @@ class BookingController extends Controller
 {
     public function show(string $id)
     {
-        $trip = Trip::active()->where('id', $id)->firstOrFail();
+        $trip = Trip::find($id);
+        if (!$trip || !$trip->is_active) {
+            abort(404);
+        }
         return view('trips.booking', compact('trip'));
     }
 
     public function store(StoreBookingRequest $request, string $id)
     {
-        $trip = Trip::active()->where('id', $id)->firstOrFail();
+        $trip = Trip::find($id);
+        if (!$trip || !$trip->is_active) {
+            abort(404);
+        }
 
         $validated = $request->validated();
 
@@ -48,7 +54,10 @@ class BookingController extends Controller
 
     public function confirmed(string $id)
     {
-        $trip      = Trip::where('id', '=', $id)->firstOrFail();
+        $trip = Trip::find($id);
+        if (!$trip) {
+            abort(404);
+        }
         $bookingId = session('booking_id');
 
         if (!$bookingId) {

@@ -39,16 +39,40 @@ class DashboardController extends Controller
 
         // Monthly bookings for last 6 months
         $monthlyBookings = $allBookings->filter(function ($b) {
-                return $b->created_at && $b->created_at >= now()->subMonths(6);
+                $date = $b->created_at;
+                if (!$date) return false;
+                if (is_string($date)) {
+                    try {
+                        $date = \Illuminate\Support\Carbon::parse($date);
+                    } catch (\Exception $e) {
+                        return false;
+                    }
+                }
+                return $date instanceof \Illuminate\Support\Carbon && $date >= now()->subMonths(6);
             })
             ->groupBy(function ($b) {
-                return $b->created_at->format('Y-m');
+                $date = $b->created_at;
+                if (is_string($date)) {
+                    try {
+                        $date = \Illuminate\Support\Carbon::parse($date);
+                    } catch (\Exception $e) {
+                        return 'unknown';
+                    }
+                }
+                return $date instanceof \Illuminate\Support\Carbon ? $date->format('Y-m') : 'unknown';
+            })
+            ->filter(function ($group, $key) {
+                return $key !== 'unknown';
             })
             ->map(function ($group) {
                 $first = $group->first();
+                $date = $first->created_at;
+                if (is_string($date)) {
+                    $date = \Illuminate\Support\Carbon::parse($date);
+                }
                 return (object)[
-                    'month' => $first->created_at->month,
-                    'year' => $first->created_at->year,
+                    'month' => $date->month,
+                    'year' => $date->year,
                     'total' => $group->count(),
                 ];
             })

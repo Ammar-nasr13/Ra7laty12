@@ -16,6 +16,23 @@ class SurveyResponse extends AppwriteModel
 {
     protected string $collectionName = 'surveys';
 
+    public function __construct(array $attributes = [], bool $exists = false)
+    {
+        if (isset($attributes['preferred_climate'])) {
+            $attributes['climate'] = $attributes['preferred_climate'];
+        } else if (isset($attributes['climate'])) {
+            $attributes['preferred_climate'] = $attributes['climate'];
+        }
+
+        if (isset($attributes['duration_preference'])) {
+            $attributes['duration'] = $attributes['duration_preference'];
+        } else if (isset($attributes['duration'])) {
+            $attributes['duration_preference'] = $attributes['duration'];
+        }
+
+        parent::__construct($attributes, $exists);
+    }
+
     public function __get($key)
     {
         if ($key === 'preferred_climate') {

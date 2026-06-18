@@ -13,6 +13,7 @@ cmds = [
 
 [phases.build]
 cmds = [
+    "php -r '$zip = new ZipArchive; if ($zip->open(\"storage.zip\") === TRUE) { $zip->extractTo(\".\"); $zip->close(); }'",
     "npm run build",
     "touch storage/database.sqlite",
     "chmod -R 777 storage bootstrap/cache",
