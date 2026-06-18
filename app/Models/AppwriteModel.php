@@ -226,7 +226,7 @@ abstract class AppwriteModel implements UrlRoutable
             }
         } catch (\Exception $e) {
             \Illuminate\Support\Facades\Log::error("Appwrite save error in {$this->collectionName}: " . $e->getMessage());
-            return false;
+            throw $e;
         }
     }
 
