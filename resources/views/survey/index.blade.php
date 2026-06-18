@@ -78,19 +78,19 @@
 
                 <div class="survey-option-grid" role="group" aria-labelledby="step2Title">
                     <div class="survey-option" role="button" tabindex="0" aria-pressed="false" data-field="travel_type" data-value="family">
-                        <span class="option-icon" aria-hidden="true">👨‍👩‍👧‍👦</span>
+                        <span class="option-icon" aria-hidden="true"><i class="fa-solid fa-people-roof"></i></span>
                         <span class="option-label" data-i18n="optFamily">مع العائلة</span>
                     </div>
                     <div class="survey-option" role="button" tabindex="0" aria-pressed="false" data-field="travel_type" data-value="couple">
-                        <span class="option-icon" aria-hidden="true">👫</span>
+                        <span class="option-icon" aria-hidden="true"><i class="fa-solid fa-heart"></i></span>
                         <span class="option-label" data-i18n="optCouple">مع الشريك</span>
                     </div>
                     <div class="survey-option" role="button" tabindex="0" aria-pressed="false" data-field="travel_type" data-value="solo">
-                        <span class="option-icon" aria-hidden="true">🧍</span>
+                        <span class="option-icon" aria-hidden="true"><i class="fa-solid fa-person"></i></span>
                         <span class="option-label" data-i18n="optSolo">منفرداً</span>
                     </div>
                     <div class="survey-option" role="button" tabindex="0" aria-pressed="false" data-field="travel_type" data-value="friends">
-                        <span class="option-icon" aria-hidden="true">👯</span>
+                        <span class="option-icon" aria-hidden="true"><i class="fa-solid fa-user-group"></i></span>
                         <span class="option-label" data-i18n="optFriends">مع الأصدقاء</span>
                     </div>
                 </div>
@@ -122,19 +122,19 @@
                     <p class="survey-label" id="climateLabel" data-i18n="labelClimate">المناخ المفضل</p>
                     <div class="survey-option-grid" role="group" aria-labelledby="climateLabel">
                         <div class="survey-option" role="button" tabindex="0" aria-pressed="false" data-field="preferred_climate" data-value="beach">
-                            <span class="option-icon" aria-hidden="true">🏖</span>
+                            <span class="option-icon" aria-hidden="true"><i class="fa-solid fa-umbrella-beach"></i></span>
                             <span class="option-label" data-i18n="optCliBeach">شاطئ وبحر</span>
                         </div>
                         <div class="survey-option" role="button" tabindex="0" aria-pressed="false" data-field="preferred_climate" data-value="desert">
-                            <span class="option-icon" aria-hidden="true">🏜</span>
+                            <span class="option-icon" aria-hidden="true"><i class="fa-solid fa-sun"></i></span>
                             <span class="option-label" data-i18n="optCliDesert">صحراء وتاريخ</span>
                         </div>
                         <div class="survey-option" role="button" tabindex="0" aria-pressed="false" data-field="preferred_climate" data-value="mountain">
-                            <span class="option-icon" aria-hidden="true">🏔</span>
+                            <span class="option-icon" aria-hidden="true"><i class="fa-solid fa-mountain-sun"></i></span>
                             <span class="option-label" data-i18n="optCliMountain">جبال وطبيعة</span>
                         </div>
                         <div class="survey-option" role="button" tabindex="0" aria-pressed="false" data-field="preferred_climate" data-value="city">
-                            <span class="option-icon" aria-hidden="true">🏙</span>
+                            <span class="option-icon" aria-hidden="true"><i class="fa-solid fa-city"></i></span>
                             <span class="option-label" data-i18n="optCliCity">مدن ومعالم</span>
                         </div>
                     </div>
@@ -220,9 +220,9 @@ function updateProgress() {
 
     const isLast = currentStep === totalSteps;
     btnNext.dataset.i18n = isLast ? 'btnSubmit' : 'btnNext';
-    btnNext.textContent = isLast
-        ? (t.btnSubmit || '🎯 اعرض رحلاتي')
-        : (t.btnNext  || 'التالي ←');
+    btnNext.innerHTML = isLast
+        ? (t.btnSubmit || '<i class="fa-solid fa-wand-magic-sparkles fa-sm"></i> اعرض رحلاتي')
+        : (t.btnNext  || 'التالي <i class="fa-solid fa-arrow-left fa-sm"></i>');
 
     if (currentStep === totalSteps) buildSummary();
 }
@@ -339,11 +339,11 @@ function buildSummary() {
     const durationLabels = { weekend: t.optDurWeekend, week: t.optDurWeek, twoweeks: t.optDurTwoWeeks, month: t.optDurMonth };
 
     const rows = [
-        ['👤', t.labelName  || 'الاسم',      document.getElementById('name').value],
-        ['✈️', t.step2Sub   || 'نوع السفر',  travelLabels[answers.travel_type]   || answers.travel_type],
-        ['💰', t.labelBudget|| 'الميزانية',   budgetLabels[budget]   || budget],
-        ['🌤', t.labelClimate|| 'المناخ',     climateLabels[answers.preferred_climate] || answers.preferred_climate],
-        ['🗓', t.labelDuration||'المدة',      durationLabels[duration]|| duration],
+        ['<i class="fa-solid fa-user fa-sm"></i>', t.labelName  || 'الاسم',      document.getElementById('name').value],
+        ['<i class="fa-solid fa-plane-up fa-sm"></i>', t.step2Sub   || 'نوع السفر',  travelLabels[answers.travel_type]   || answers.travel_type],
+        ['<i class="fa-solid fa-wallet fa-sm"></i>', t.labelBudget|| 'الميزانية',   budgetLabels[budget]   || budget],
+        ['<i class="fa-solid fa-cloud-sun fa-sm"></i>', t.labelClimate|| 'المناخ',     climateLabels[answers.preferred_climate] || answers.preferred_climate],
+        ['<i class="fa-regular fa-calendar fa-sm"></i>', t.labelDuration||'المدة',      durationLabels[duration]|| duration],
     ];
 
     document.getElementById('summaryCells').innerHTML = rows

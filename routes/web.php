@@ -14,6 +14,27 @@ use App\Http\Controllers\Admin;
 // ─── Front-end Routes ───────────────────────────────────────────────
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/sitemap.xml', [HomeController::class, 'sitemap'])->name('sitemap');
+Route::get('/debug-testimonials', function() {
+    try {
+        $testimonials = \App\Models\Testimonial::latest()->paginate(15);
+        $first = $testimonials->first();
+        return response()->json([
+            'status' => 'success',
+            'count' => $testimonials->count(),
+            'first_item' => $first ? $first->toArray() : null,
+            'review_val' => $first ? $first->review : null,
+            'avatar_val' => $first ? $first->avatar_url : null,
+        ]);
+    } catch (\Throwable $e) {
+        return response()->json([
+            'status' => 'error',
+            'error' => $e->getMessage(),
+            'file' => $e->getFile(),
+            'line' => $e->getLine(),
+            'trace' => $e->getTraceAsString()
+        ]);
+    }
+});
 Route::get('/trips/{id}', [TripController::class, 'show'])->name('trips.show');
 
 Route::get('/trips/{id}/book',      [BookingController::class, 'show'])->name('trips.book');

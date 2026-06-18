@@ -11,7 +11,7 @@
 </div>
 
 <form method="GET" class="admin-search-bar">
-    <input type="text" name="search" class="admin-input" placeholder="🔍  {{ __('admin.search_surveys') }}" value="{{ request('search') }}" style="flex:1;">
+    <input type="text" name="search" class="admin-input" placeholder="{{ __('admin.search_surveys') }}" value="{{ request('search') }}" style="flex:1;">
     <select name="travel_type" class="admin-select" style="width:auto;">
         <option value="">{{ __('admin.all_types') }}</option>
         @foreach(['family' => __('admin.travel_family'), 'couple' => __('admin.travel_couple'), 'solo' => __('admin.travel_solo'), 'friends' => __('admin.travel_friends')] as $v => $l)

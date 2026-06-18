@@ -12,7 +12,7 @@
 </div>
 
 <form method="GET" class="admin-search-bar">
-    <input type="text" name="search" class="admin-input" placeholder="🔍  {{ __('admin.search_bookings') }}" value="{{ request('search') }}" style="flex:1; min-width:200px;">
+    <input type="text" name="search" class="admin-input" placeholder="{{ __('admin.search_bookings') }}" value="{{ request('search') }}" style="flex:1; min-width:200px;">
     <select name="status" class="admin-select" style="width:auto;">
         <option value="">{{ __('admin.all_statuses') }}</option>
         <option value="confirmed" {{ request('status')=='confirmed' ?'selected':'' }}>{{ __('admin.status_confirmed') }}</option>

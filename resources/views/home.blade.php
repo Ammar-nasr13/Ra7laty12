@@ -52,7 +52,7 @@
     <div style="max-width:900px; margin:0 auto; padding:2rem 1.5rem; text-align:center; position:relative; z-index:2;">
 
         <div style="display:inline-block; background:rgba(197,160,40,0.15); border:1px solid rgba(197,160,40,0.3); border-radius:30px; padding:0.4rem 1.2rem; color:#F0D060; font-size:0.95rem; font-weight:600; margin-bottom:1.5rem; animation:fadeSlideIn 0.6s ease;">
-            {{ $isAr ? '✈ اكتشف العالم معنا' : '✈ Discover the World With Us' }}
+            <i class="fa-solid fa-plane-up" style="margin-inline-end: 0.35rem;"></i>{{ $isAr ? 'اكتشف العالم معنا' : 'Discover the World With Us' }}
         </div>
 
         <h1 style="font-size:clamp(2.5rem,7vw,5rem); font-weight:900; color:white; line-height:1.15; margin-bottom:1.25rem; text-shadow:0 4px 20px rgba(0,0,0,0.3);">
@@ -120,23 +120,23 @@
     <div class="ticker-track" id="tickerTrack">
         @php
         $offers = [
-            ['ar'=>'🔥 خصم 30% على رحلات شرم الشيخ — احجز الآن!', 'en'=>'🔥 30% OFF Sharm El-Sheikh — Book Now!'],
-            ['ar'=>'✈ رحلة باريس رومانسية — عرض خاص للزوجين!', 'en'=>'✈ Romantic Paris Trip — Couples Special!'],
-            ['ar'=>'🏖 الغردقة 5 أيام شاملة بـ $350 فقط!', 'en'=>'🏖 Hurghada 5 Days All-Inclusive for $350 Only!'],
-            ['ar'=>'🌍 دبي — باقات مميزة للعائلات لهذا الصيف!', 'en'=>'🌍 Dubai — Special Family Packages This Summer!'],
-            ['ar'=>'⭐ إسطنبول 6 أيام كل شيء شامل — احجز قبل نفاد الأماكن!', 'en'=>'⭐ Istanbul 6 Days All-Inclusive — Book Before Spots Run Out!'],
+            ['ar'=>'<i class="fa-solid fa-fire" style="color:#F0D060; margin-inline-end:0.3rem;"></i> خصم 30% على رحلات شرم الشيخ — احجز الآن!', 'en'=>'<i class="fa-solid fa-fire" style="color:#F0D060; margin-inline-end:0.3rem;"></i> 30% OFF Sharm El-Sheikh — Book Now!'],
+            ['ar'=>'<i class="fa-solid fa-plane-up" style="color:#F0D060; margin-inline-end:0.3rem;"></i> رحلة باريس رومانسية — عرض خاص للزوجين!', 'en'=>'<i class="fa-solid fa-plane-up" style="color:#F0D060; margin-inline-end:0.3rem;"></i> Romantic Paris Trip — Couples Special!'],
+            ['ar'=>'<i class="fa-solid fa-umbrella-beach" style="color:#F0D060; margin-inline-end:0.3rem;"></i> الغردقة 5 أيام شاملة بـ $350 فقط!', 'en'=>'<i class="fa-solid fa-umbrella-beach" style="color:#F0D060; margin-inline-end:0.3rem;"></i> Hurghada 5 Days All-Inclusive for $350 Only!'],
+            ['ar'=>'<i class="fa-solid fa-earth-americas" style="color:#F0D060; margin-inline-end:0.3rem;"></i> دبي — باقات مميزة للعائلات لهذا الصيف!', 'en'=>'<i class="fa-solid fa-earth-americas" style="color:#F0D060; margin-inline-end:0.3rem;"></i> Dubai — Special Family Packages This Summer!'],
+            ['ar'=>'<i class="fa-solid fa-star" style="color:#F0D060; margin-inline-end:0.3rem;"></i> إسطنبول 6 أيام كل شيء شامل — احجز قبل نفاد الأماكن!', 'en'=>'<i class="fa-solid fa-star" style="color:#F0D060; margin-inline-end:0.3rem;"></i> Istanbul 6 Days All-Inclusive — Book Before Spots Run Out!'],
         ];
         @endphp
         @foreach($offers as $offer)
             <span class="ticker-item">
-                <span class="offer-text" data-ar="{{ $offer['ar'] }}" data-en="{{ $offer['en'] }}">{{ $isAr ? $offer['ar'] : $offer['en'] }}</span>
+                <span class="offer-text" data-ar="{{ $offer['ar'] }}" data-en="{{ $offer['en'] }}">{!! $isAr ? $offer['ar'] : $offer['en'] !!}</span>
             </span>
             <span style="color:rgba(197,160,40,0.4);">●</span>
         @endforeach
         {{-- Duplicate for seamless loop --}}
         @foreach($offers as $offer)
             <span class="ticker-item">
-                <span class="offer-text" data-ar="{{ $offer['ar'] }}" data-en="{{ $offer['en'] }}">{{ $isAr ? $offer['ar'] : $offer['en'] }}</span>
+                <span class="offer-text" data-ar="{{ $offer['ar'] }}" data-en="{{ $offer['en'] }}">{!! $isAr ? $offer['ar'] : $offer['en'] !!}</span>
             </span>
             <span style="color:rgba(197,160,40,0.4);">●</span>
         @endforeach
@@ -154,7 +154,7 @@
         </div>
 
         @php
-        $destCategoryEmoji = ['beach'=>'🏖', 'heritage'=>'🏛', 'culture'=>'🏺', 'adventure'=>'🧗'];
+        $destCategoryEmoji = ['beach'=>'<i class="fa-solid fa-umbrella-beach"></i>', 'heritage'=>'<i class="fa-solid fa-landmark"></i>', 'culture'=>'<i class="fa-solid fa-building-columns"></i>', 'adventure'=>'<i class="fa-solid fa-mountain-sun"></i>'];
         $destLang = app()->getLocale();
         @endphp
         <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(300px, 1fr)); gap:1.5rem;">
@@ -164,7 +164,7 @@
                 $destImg  = $dest->getFirstMedia('image');
                 $destName = $dest->getTranslation('name', $destLang);
                 $destDesc = $dest->getTranslation('description', $destLang);
-                $emoji    = $destCategoryEmoji[$dest->category] ?? '📍';
+                $emoji    = $destCategoryEmoji[$dest->category] ?? '<i class="fa-solid fa-location-dot"></i>';
                 $delay    = $loop->index * 0.1;
             @endphp
             <a href="{{ route('destinations.show', $dest->id) }}" style="display:block; text-decoration:none;">
@@ -187,7 +187,7 @@
             </a>
             @empty
             <div style="grid-column:1/-1; text-align:center; padding:3rem; color:#999;">
-                <div style="font-size:2rem; margin-bottom:0.5rem;">🗺</div>
+                <div style="margin-bottom:0.75rem;"><i class="fa-solid fa-map-location-dot" style="font-size:2.5rem; color:#C5A028;"></i></div>
                 <div>{{ $isAr ? 'لا توجد وجهات متاحة حالياً' : 'No destinations available yet' }}</div>
             </div>
             @endforelse
@@ -217,7 +217,7 @@
         {{-- Trips Grid --}}
         <div class="trips-grid" id="tripsGrid">
             <div style="grid-column:1/-1; text-align:center; padding:3rem; color:#999;">
-                <div style="font-size:2rem; margin-bottom:0.5rem;">⏳</div>
+                <div style="margin-bottom:0.75rem;"><i class="fa-solid fa-spinner fa-spin" style="font-size:2.5rem; color:#C5A028;"></i></div>
                 <div>{{ $isAr ? 'جاري تحميل الرحلات...' : 'Loading trips...' }}</div>
             </div>
         </div>
@@ -245,7 +245,11 @@
     <div style="max-width:700px; margin:0 auto; text-align:center; position:relative; z-index:1;">
 
         {{-- Pyramid decoration --}}
-        <div style="font-size:3rem; margin-bottom:1rem; opacity:0.6;">🔺 🏺 🔺</div>
+        <div style="font-size:3.5rem; margin-bottom:1rem; color:#F0D060; display:flex; justify-content:center; gap:1.5rem; opacity:0.75;">
+            <i class="fa-solid fa-monument"></i>
+            <i class="fa-solid fa-compass"></i>
+            <i class="fa-solid fa-monument"></i>
+        </div>
 
         <h2 style="font-size:clamp(1.8rem,4vw,2.8rem); font-weight:800; color:white; margin:1rem 0; line-height:1.3;" data-i18n="surveySectionTitle">
             مش عارف تختار رحلتك؟
@@ -261,15 +265,15 @@
 
         <div style="display:flex; justify-content:center; gap:2.5rem; margin-top:2.5rem; flex-wrap:wrap;">
             <div style="text-align:center; color:#8A9BB5;">
-                <div style="font-size:1.5rem; margin-bottom:0.3rem;">⚡</div>
+                <div style="margin-bottom:0.4rem;"><i class="fa-solid fa-bolt" style="font-size:1.8rem; color:#F0D060;"></i></div>
                 <div style="font-size:0.85rem; font-weight:600;" data-i18n="surveyFeature1">نتائج فورية</div>
             </div>
             <div style="text-align:center; color:#8A9BB5;">
-                <div style="font-size:1.5rem; margin-bottom:0.3rem;">🎯</div>
+                <div style="margin-bottom:0.4rem;"><i class="fa-solid fa-bullseye" style="font-size:1.8rem; color:#F0D060;"></i></div>
                 <div style="font-size:0.85rem; font-weight:600;" data-i18n="surveyFeature2">رحلات مخصصة لك</div>
             </div>
             <div style="text-align:center; color:#8A9BB5;">
-                <div style="font-size:1.5rem; margin-bottom:0.3rem;">🆓</div>
+                <div style="margin-bottom:0.4rem;"><i class="fa-solid fa-gift" style="font-size:1.8rem; color:#F0D060;"></i></div>
                 <div style="font-size:0.85rem; font-weight:600;" data-i18n="surveyFeature3">مجاناً تماماً</div>
             </div>
         </div>
@@ -295,7 +299,7 @@
         ];
         $lang = app()->getLocale();
         @endphp
-        <div class="testimonials-scroll-container">
+        <div class="testimonials-scroll-container" style="display: flex; flex-wrap: nowrap !important; gap: 1rem; overflow-x: auto; padding: 1.5rem 0.5rem; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; scrollbar-width: none; -ms-overflow-style: none;">
             @forelse($testimonials->take(15) as $testi)
             @php
                 $i       = $loop->index;
@@ -304,35 +308,36 @@
                 $stars   = str_repeat('★', $testi->rating) . str_repeat('☆', 5 - $testi->rating);
                 $gradient = $avatarGradients[$i % count($avatarGradients)];
             @endphp
-            <div class="testimonial-card fade-up" style="transition-delay:{{ $i * 0.1 }}s">
-                <div class="stars">{{ $stars }}</div>
-                <p style="color:#444; line-height:1.8; margin:0.75rem 0; font-size:0.95rem;">
+            <div class="testimonial-card fade-up" style="flex: 0 0 240px !important; width: 240px !important; max-width: 240px !important; scroll-snap-align: start; margin: 0; background: white; border-radius: 12px; padding: 1rem; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border-top: 4px solid #C5A028; transition: transform 0.3s; transition-delay:{{ $i * 0.1 }}s; box-sizing: border-box;">
+                <div class="stars" style="color: #F0D060; font-size: 0.85rem; letter-spacing: 1px;">{{ $stars }}</div>
+                <p style="color:#444; line-height:1.5; margin:0.5rem 0; font-size:0.8rem; height: 55px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; text-overflow: ellipsis;">
                     "{{ $review }}"
                 </p>
-                <div style="display:flex; align-items:center; gap:0.75rem; margin-top:1rem;">
-                    <div style="width:42px; height:42px; background:{{ $gradient }}; border-radius:50%; display:flex; align-items:center; justify-content:center; color:white; font-weight:800; font-size:1rem;">{{ $initial }}</div>
-                    <div>
-                        <div style="font-weight:700; font-size:0.95rem; color:#1A3A5C;">{{ $testi->name }}</div>
-                        <div style="font-size:0.8rem; color:#888;">{{ $isAr ? 'مصر' : 'Egypt' }}</div>
+                <div style="display:flex; align-items:center; gap:0.5rem; margin-top:0.6rem; border-top: 1px solid #F3F4F6; padding-top: 0.5rem;">
+                    <div style="width:30px; height:30px; background:{{ $gradient }}; border-radius:50%; display:flex; align-items:center; justify-content:center; color:white; font-weight:800; font-size:0.8rem; flex-shrink: 0;">{{ $initial }}</div>
+                    <div style="min-width: 0; flex: 1;">
+                        <div style="font-weight:700; font-size:0.8rem; color:#1A3A5C; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ $testi->name }}</div>
+                        <div style="font-size:0.7rem; color:#888;">{{ $isAr ? 'مصر' : 'Egypt' }}</div>
                     </div>
                 </div>
             </div>
             @empty
             {{-- Fallback if DB is empty --}}
-            <div class="testimonial-card fade-up">
-                <div class="stars">★★★★★</div>
-                <p style="color:#444; line-height:1.8; margin:0.75rem 0; font-size:0.95rem;">
+            <div class="testimonial-card fade-up" style="flex: 0 0 240px !important; width: 240px !important; max-width: 240px !important; scroll-snap-align: start; margin: 0; background: white; border-radius: 12px; padding: 1rem; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border-top: 4px solid #C5A028; box-sizing: border-box;">
+                <div class="stars" style="color: #F0D060; font-size: 0.85rem; letter-spacing: 1px;">★★★★★</div>
+                <p style="color:#444; line-height:1.5; margin:0.5rem 0; font-size:0.8rem; height: 55px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; text-overflow: ellipsis;">
                     "{{ $isAr ? 'رحلة رائعة ومنظمة بشكل احترافي. أنصح الجميع برحلاتي!' : 'Amazing and professionally organized trip. I recommend Rehlatyy to everyone!' }}"
                 </p>
-                <div style="display:flex; align-items:center; gap:0.75rem; margin-top:1rem;">
-                    <div style="width:42px; height:42px; background:linear-gradient(135deg,#C5A028,#F0D060); border-radius:50%; display:flex; align-items:center; justify-content:center; color:#1A1A1A; font-weight:800; font-size:1rem;">أ</div>
-                    <div>
-                        <div style="font-weight:700; font-size:0.95rem; color:#1A3A5C;">{{ $isAr ? 'أحمد محمد' : 'Ahmed Mohamed' }}</div>
-                        <div style="font-size:0.8rem; color:#888;">{{ $isAr ? 'القاهرة، مصر' : 'Cairo, Egypt' }}</div>
+                <div style="display:flex; align-items:center; gap:0.5rem; margin-top:0.6rem; border-top: 1px solid #F3F4F6; padding-top: 0.5rem;">
+                    <div style="width:30px; height:30px; background:linear-gradient(135deg,#C5A028,#F0D060); border-radius:50%; display:flex; align-items:center; justify-content:center; color:#1A1A1A; font-weight:800; font-size:0.8rem; flex-shrink: 0;">أ</div>
+                    <div style="min-width: 0; flex: 1;">
+                        <div style="font-weight:700; font-size:0.8rem; color:#1A3A5C; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ $isAr ? 'أحمد محمد' : 'Ahmed Mohamed' }}</div>
+                        <div style="font-size:0.7rem; color:#888;">{{ $isAr ? 'القاهرة، مصر' : 'Cairo, Egypt' }}</div>
                     </div>
                 </div>
             </div>
             @endforelse
+        </div>
         </div>
 
         {{-- Form to Add a Review --}}
@@ -521,12 +526,12 @@ document.addEventListener('langChanged', (e) => {
 
     // Update ticker texts
     document.querySelectorAll('.offer-text').forEach(el => {
-        el.textContent = newLang === 'ar' ? el.dataset.ar : el.dataset.en;
+        el.innerHTML = lang === 'ar' ? el.dataset.ar : el.dataset.en;
     });
 
     // Update newsletter placeholder
     const emailInput = document.getElementById('newsletterEmail');
-    if (emailInput) emailInput.placeholder = (window.TEXTS[newLang] || {}).newsletterPlaceholder || '';
+    if (emailInput) emailInput.placeholder = (window.TEXTS[lang] || {}).newsletterPlaceholder || '';
 });
 
 // ── Newsletter

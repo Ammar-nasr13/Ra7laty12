@@ -152,7 +152,7 @@
 
         @else
         <div style="text-align:center; padding:5rem 1rem; color:#94A3B8;">
-            <div style="font-size:3rem; margin-bottom:1rem;">🗺</div>
+            <div style="margin-bottom:1rem;"><i class="fa-solid fa-map-location-dot" style="font-size:3rem; color:#94A3B8;"></i></div>
             <h3 style="font-weight:700; color:#64748B; margin-bottom:0.5rem;">
                 {{ $isAr ? 'لا توجد رحلات متاحة' : 'No trips available' }}
             </h3>

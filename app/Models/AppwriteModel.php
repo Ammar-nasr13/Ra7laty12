@@ -347,6 +347,14 @@ abstract class AppwriteModel implements UrlRoutable
     }
 
     /**
+     * Add Media (fluent helper for Spatie Medialibrary emulation)
+     */
+    public function addMedia($file): AppwriteMediaHelper
+    {
+        return new AppwriteMediaHelper($this, $file);
+    }
+
+    /**
      * Clear Media Collection (Spatie Medialibrary emulation)
      */
     public function clearMediaCollection(string $collectionName): self
@@ -998,37 +1006,41 @@ class AppwriteMediaHelper
 
     public function toMediaCollection(string $collectionName): void
     {
-        if (empty($this->fileInput)) {
-            return;
-        }
+        try {
+            if (empty($this->fileInput)) {
+                return;
+            }
 
-        $bucketId = config('services.appwrite.image_bucket_id', '6a33db0d003899080b7d');
-        $service = $this->model::getAppwriteService();
+            $bucketId = config('services.appwrite.image_bucket_id', '6a33db0d003899080b7d');
+            $service = $this->model::getAppwriteService();
 
-        if (is_array($this->fileInput)) {
-            $urls = [];
-            foreach ($this->fileInput as $file) {
-                if ($file instanceof \Illuminate\Http\UploadedFile) {
-                    $url = $service->uploadFile($bucketId, $file);
-                    if ($url) {
-                        $urls[] = $url;
+            if (is_array($this->fileInput)) {
+                $urls = [];
+                foreach ($this->fileInput as $file) {
+                    if ($file instanceof \Illuminate\Http\UploadedFile) {
+                        $url = $service->uploadFile($bucketId, $file);
+                        if ($url) {
+                            $urls[] = $url;
+                        }
+                    }
+                }
+                if ($collectionName === 'highlight_images' || $collectionName === 'gallery') {
+                    $this->model->highlight_images = array_merge($this->model->highlight_images ?? [], $urls);
+                }
+            } else if ($this->fileInput instanceof \Illuminate\Http\UploadedFile) {
+                $url = $service->uploadFile($bucketId, $this->fileInput);
+                if ($url) {
+                    if ($collectionName === 'image' || $collectionName === 'main_image') {
+                        $this->model->image_url = $url;
+                    } elseif ($collectionName === 'avatar') {
+                        $this->model->avatar_url = $url;
                     }
                 }
             }
-            if ($collectionName === 'highlight_images' || $collectionName === 'gallery') {
-                $this->model->highlight_images = array_merge($this->model->highlight_images ?? [], $urls);
-            }
-        } else if ($this->fileInput instanceof \Illuminate\Http\UploadedFile) {
-            $url = $service->uploadFile($bucketId, $this->fileInput);
-            if ($url) {
-                if ($collectionName === 'image' || $collectionName === 'main_image') {
-                    $this->model->image_url = $url;
-                } elseif ($collectionName === 'avatar') {
-                    $this->model->avatar_url = $url;
-                }
-            }
-        }
 
-        $this->model->save();
+            $this->model->save();
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error("Appwrite toMediaCollection error for collection '{$collectionName}' on model " . get_class($this->model) . ": " . $e->getMessage());
+        }
     }
 }

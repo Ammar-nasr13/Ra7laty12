@@ -9,11 +9,11 @@
 <div class="results-hero">
     <div style="max-width:700px; margin:0 auto; padding:0 1rem;">
         <div class="match-badge">
-            <span data-i18n="matchBadge">✨ مطابقة لتفضيلاتك</span>
+            <span data-i18n="matchBadge"><i class="fa-solid fa-star fa-sm" style="color:#F0D060;"></i> مطابقة لتفضيلاتك</span>
         </div>
         <h1 style="font-size:clamp(1.6rem,4vw,2.5rem); font-weight:900; margin:0.75rem 0; line-height:1.3;">
             <span data-i18n-template="resultsTitle" data-name="{{ $response->name }}">
-                رحلاتك المقترحة يا {{ $response->name }}! 🎉
+                رحلاتك المقترحة يا {{ $response->name }}! <i class="fa-solid fa-party-horn" style="color:#C5A028;"></i>
             </span>
         </h1>
         <p style="color:#8A9BB5; font-size:1rem;" data-i18n="resultsSub">
@@ -36,13 +36,13 @@
 
         {{-- Loading state --}}
         <div id="loadingState" style="text-align:center; padding:3rem; color:#888;">
-            <div style="font-size:2.5rem; margin-bottom:0.75rem; animation:spin 1s linear infinite; display:inline-block;">⏳</div>
+            <div style="font-size:2.5rem; margin-bottom:0.75rem; animation:spin 1s linear infinite; display:inline-block; color:#C5A028;"><i class="fa-solid fa-circle-notch"></i></div>
             <div style="font-size:1rem; font-weight:600;" data-i18n="resultsSub">جاري البحث عن رحلاتك المثالية...</div>
         </div>
 
         {{-- No results state --}}
         <div id="noResultsState" style="display:none; text-align:center; padding:3rem;">
-            <div style="font-size:3rem; margin-bottom:1rem;">🔍</div>
+            <div style="font-size:3rem; margin-bottom:1rem; color:#C5A028;"><i class="fa-solid fa-magnifying-glass"></i></div>
             <h2 style="color:#1A3A5C; font-weight:800; margin-bottom:0.5rem;" data-i18n="noMatchTitle">لا توجد رحلات مطابقة تماماً</h2>
             <p style="color:#777;" data-i18n="noMatchSub">إليك أفضل رحلاتنا المقترحة</p>
         </div>
@@ -56,7 +56,7 @@
                 ← أعد الاستبيان
             </a>
             <a href="{{ route('home') }}#world-trips" class="btn-gold" data-i18n="navTrips">
-                🌍 عرض كل الرحلات
+            <i class="fa-solid fa-earth-africa"></i> عرض كل الرحلات
             </a>
         </div>
 
@@ -93,17 +93,17 @@ function buildChips(l) {
     const climateMap  = { beach: tx.optCliBeach, desert: tx.optCliDesert, mountain: tx.optCliMountain, city: tx.optCliCity };
     const durationMap = { weekend: tx.optDurWeekend, week: tx.optDurWeek, twoweeks: tx.optDurTwoWeeks, month: tx.optDurMonth };
 
-    document.getElementById('chipBudget').textContent   = '💰 ' + (budgetMap[SURVEY_ANSWERS.budget]   || SURVEY_ANSWERS.budget);
-    document.getElementById('chipTravel').textContent   = '✈️ '  + (travelMap[SURVEY_ANSWERS.travel_type]  || SURVEY_ANSWERS.travel_type);
-    document.getElementById('chipClimate').textContent  = '🌤 '  + (climateMap[SURVEY_ANSWERS.climate]  || SURVEY_ANSWERS.climate);
-    document.getElementById('chipDuration').textContent = '🗓 '  + (durationMap[SURVEY_ANSWERS.duration] || SURVEY_ANSWERS.duration);
+    document.getElementById('chipBudget').innerHTML   = '<i class="fa-solid fa-wallet fa-sm"></i> ' + (budgetMap[SURVEY_ANSWERS.budget]   || SURVEY_ANSWERS.budget);
+    document.getElementById('chipTravel').innerHTML   = '<i class="fa-solid fa-plane-up fa-sm"></i> '  + (travelMap[SURVEY_ANSWERS.travel_type]  || SURVEY_ANSWERS.travel_type);
+    document.getElementById('chipClimate').innerHTML  = '<i class="fa-solid fa-cloud-sun fa-sm"></i> '  + (climateMap[SURVEY_ANSWERS.climate]  || SURVEY_ANSWERS.climate);
+    document.getElementById('chipDuration').innerHTML = '<i class="fa-regular fa-calendar fa-sm"></i> '  + (durationMap[SURVEY_ANSWERS.duration] || SURVEY_ANSWERS.duration);
 }
 
 // ── Results title (uses the name)
 function buildTitle(l) {
     const tx = (window.TEXTS || {})[l] || (window.TEXTS || {})['ar'] || {};
     const el = document.querySelector('[data-i18n-template="resultsTitle"]');
-    if (el) el.textContent = (tx.resultsTitle || 'رحلاتك المقترحة يا %s! 🎉').replace('%s', RESPONSE_NAME);
+    if (el) el.innerHTML = (tx.resultsTitle || 'رحلاتك المقترحة يا %s! <i class="fa-solid fa-star" style="color:#C5A028;"></i>').replace('%s', RESPONSE_NAME);
 }
 
 // ── Render matched trips

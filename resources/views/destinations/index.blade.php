@@ -3,7 +3,7 @@
 @php
 $isAr  = app()->getLocale() === 'ar';
 $lang  = app()->getLocale();
-$categoryEmoji = ['beach'=>'🏖', 'heritage'=>'🏛', 'culture'=>'🏺', 'adventure'=>'🧗'];
+$categoryEmoji = ['beach'=>'<i class="fa-solid fa-umbrella-beach"></i>', 'heritage'=>'<i class="fa-solid fa-landmark"></i>', 'culture'=>'<i class="fa-solid fa-building-columns"></i>', 'adventure'=>'<i class="fa-solid fa-mountain-sun"></i>'];
 $currentCountry  = request('country', '');
 $currentCategory = request('category', '');
 @endphp
@@ -25,7 +25,7 @@ $currentCategory = request('category', '');
 {{-- Hero --}}
 <section style="background:linear-gradient(135deg,#0A1E30 0%,#1A3A5C 100%); padding:5rem 1.5rem 3rem; text-align:center;">
     <div style="max-width:700px; margin:0 auto;">
-        <div style="font-size:3rem; margin-bottom:1rem;">🌍</div>
+        <div style="margin-bottom:1rem;"><i class="fa-solid fa-earth-americas" style="font-size:3rem; color:#F0D060;"></i></div>
         <h1 style="font-size:clamp(2rem,5vw,3rem); font-weight:900; color:#F0D060; margin-bottom:0.75rem;">
             {{ $isAr ? 'كل الوجهات السياحية' : 'All Destinations' }}
         </h1>
@@ -71,11 +71,11 @@ $currentCategory = request('category', '');
                 <span style="font-size:0.85rem; color:#64748B; font-weight:700;">
                     {{ $isAr ? 'الفئة:' : 'Category:' }}
                 </span>
-                @foreach(['' => ($isAr?'الكل':'All'), 'beach'=>($isAr?'🏖 شاطئ':'🏖 Beach'), 'culture'=>($isAr?'🏺 ثقافة':'🏺 Culture'), 'adventure'=>($isAr?'🧗 مغامرة':'🧗 Adventure'), 'heritage'=>($isAr?'🏛 تراث':'🏛 Heritage')] as $v => $l)
+                @foreach(['' => ($isAr?'الكل':'All'), 'beach'=>($isAr?'<i class="fa-solid fa-umbrella-beach"></i> شاطئ':'<i class="fa-solid fa-umbrella-beach"></i> Beach'), 'culture'=>($isAr?'<i class="fa-solid fa-landmark"></i> ثقافة':'<i class="fa-solid fa-landmark"></i> Culture'), 'adventure'=>($isAr?'<i class="fa-solid fa-mountain-sun"></i> مغامرة':'<i class="fa-solid fa-mountain-sun"></i> Adventure'), 'heritage'=>($isAr?'<i class="fa-solid fa-building-columns"></i> تراث':'<i class="fa-solid fa-building-columns"></i> Heritage')] as $v => $l)
                 <button type="submit" name="category" value="{{ $v }}"
                         class="filter-tab {{ $currentCategory === $v ? 'active' : '' }}"
-                        style="font-size:0.82rem; padding:0.35rem 0.85rem;">
-                    {{ $l }}
+                        style="font-size:0.82rem; padding:0.35rem 0.85rem; display:inline-flex; align-items:center; gap:0.35rem;">
+                    {!! $l !!}
                 </button>
                 @endforeach
                 @if($currentCountry)
@@ -102,7 +102,7 @@ $currentCategory = request('category', '');
                 $img     = $dest->getFirstMedia('image');
                 $name    = $dest->getTranslation('name', $lang);
                 $desc    = $dest->getTranslation('description', $lang);
-                $emoji   = $categoryEmoji[$dest->category] ?? '📍';
+                $emoji   = $categoryEmoji[$dest->category] ?? '<i class="fa-solid fa-location-dot"></i>';
                 $gallery = $dest->getMedia('gallery');
             @endphp
 
@@ -154,7 +154,7 @@ $currentCategory = request('category', '');
             </a>
             @empty
             <div style="grid-column:1/-1; text-align:center; padding:5rem 1rem; color:#94A3B8;">
-                <div style="font-size:3rem; margin-bottom:1rem;">🗺</div>
+                <div style="margin-bottom:1rem;"><i class="fa-solid fa-map-location-dot" style="font-size:3rem; color:#94A3B8;"></i></div>
                 <h3 style="font-weight:700; color:#64748B; margin-bottom:0.5rem;">
                     {{ $isAr ? 'لا توجد وجهات' : 'No destinations found' }}
                 </h3>

@@ -14,7 +14,7 @@
 
         {{-- Header --}}
         <div style="text-align:center; margin-bottom:2rem;">
-            <div style="font-size:3rem; margin-bottom:0.5rem;">⭐</div>
+            <div style="font-size:3rem; margin-bottom:0.5rem; color:#C5A028;"><i class="fa-solid fa-star"></i></div>
             <h1 style="font-size:1.6rem; font-weight:900; color:#1A3A5C; margin:0 0 0.5rem;">
                 {{ $isAr ? 'شاركنا تجربتك!' : 'Share Your Experience!' }}
             </h1>

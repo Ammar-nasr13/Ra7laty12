@@ -577,6 +577,13 @@ body {
     font-size: 2rem;
     display: block;
     margin-bottom: 0.4rem;
+    color: #C5A028;
+    transition: transform 0.2s;
+}
+.survey-option:hover .option-icon,
+.survey-option.selected .option-icon {
+    transform: scale(1.15);
+    color: #E6B800;
 }
 
 .survey-option .option-label {
@@ -689,7 +696,8 @@ body {
     display: none; /* Chrome, Safari, Opera */
 }
 .testimonials-scroll-container .testimonial-card {
-    flex: 0 0 320px;
+    flex: 0 0 240px !important;
+    max-width: 240px !important;
     scroll-snap-align: start;
     margin: 0;
 }

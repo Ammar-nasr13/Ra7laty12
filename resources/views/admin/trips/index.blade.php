@@ -16,12 +16,12 @@
 
 {{-- Filters --}}
 <form method="GET" class="admin-search-bar">
-    <input type="text" name="search" class="admin-input" placeholder="🔍  {{ __('admin.search_trips') }}" value="{{ request('search') }}" style="flex:1; min-width:180px;">
+    <input type="text" name="search" class="admin-input" placeholder="{{ __('admin.search_trips') }}" value="{{ request('search') }}" style="flex:1; min-width:180px;">
     <select name="category" class="admin-select" style="width:auto;">
         <option value="">{{ __('admin.all_categories') }}</option>
-        <option value="beach"    {{ request('category')=='beach'    ? 'selected':'' }}>🏖 {{ __('admin.cat_beach') }}</option>
-        <option value="culture"  {{ request('category')=='culture'  ? 'selected':'' }}>🏛 {{ __('admin.cat_culture') }}</option>
-        <option value="adventure"{{ request('category')=='adventure'? 'selected':'' }}>🏔 {{ __('admin.cat_adventure') }}</option>
+        <option value="beach"    {{ request('category')=='beach'    ? 'selected':'' }}>{{ __('admin.cat_beach') }}</option>
+        <option value="culture"  {{ request('category')=='culture'  ? 'selected':'' }}>{{ __('admin.cat_culture') }}</option>
+        <option value="adventure"{{ request('category')=='adventure'? 'selected':'' }}>{{ __('admin.cat_adventure') }}</option>
     </select>
     <select name="status" class="admin-select" style="width:auto;">
         <option value="">{{ __('admin.all_statuses') }}</option>

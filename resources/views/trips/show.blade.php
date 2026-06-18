@@ -472,10 +472,9 @@
             </div>
         </div>
 
-        {{-- Gallery --}}
         @php
             $galleryMedia  = $trip->getMedia('gallery');
-            $galleryEmojis = ['🏖', '🌅', '🗺️', '📸', '🌴'];
+            $galleryIcons  = ['fa-umbrella-beach', 'fa-sun', 'fa-map-location-dot', 'fa-camera', 'fa-tree'];
             $galleryColors = [
                 [$trip->color_from, $trip->color_to],
                 [$trip->color_to, '#1A3A5C'],
@@ -502,8 +501,8 @@
                         </div>
                     @else
                         @php $gc = $galleryColors[$i]; @endphp
-                        <div class="gallery-item-inner" style="background:linear-gradient(135deg,{{ $gc[0] }},{{ $gc[1] }});">
-                            <span style="font-size:{{ $i === 0 ? '3.5' : '2' }}rem;">{{ $galleryEmojis[$i] }}</span>
+                        <div class="gallery-item-inner" style="background:linear-gradient(135deg,{{ $gc[0] }},{{ $gc[1] }}); color: white;">
+                            <i class="fa-solid {{ $galleryIcons[$i] }}" style="font-size:{{ $i === 0 ? '3.5' : '2' }}rem; opacity: 0.8;"></i>
                         </div>
                     @endif
                 </div>
@@ -722,7 +721,7 @@
 <div class="related-section">
     <div style="max-width:1200px; margin:0 auto;">
         <div style="text-align:center; margin-bottom:0.5rem;">
-            <div class="section-badge">🌍 {{ $isAr ? 'قد يعجبك أيضاً' : 'You May Also Like' }}</div>
+            <div class="section-badge"><i class="fa-solid fa-earth-americas" style="margin-inline-end: 0.3rem;"></i>{{ $isAr ? 'قد يعجبك أيضاً' : 'You May Also Like' }}</div>
             <h2 class="section-title" style="color:#1A3A5C;">{{ $isAr ? 'رحلات مشابهة' : 'Similar Trips' }}</h2>
         </div>
         <div class="related-grid trips-grid" id="relatedGrid"></div>

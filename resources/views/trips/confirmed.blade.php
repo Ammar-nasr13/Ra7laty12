@@ -115,7 +115,7 @@
             <div class="success-icon">
                 <i class="fa-solid fa-check fa-2x"></i>
             </div>
-            <h1>{{ $isAr ? 'تم الحجز بنجاح! 🎉' : 'Booking Confirmed! 🎉' }}</h1>
+            <h1>{{ $isAr ? 'تم الحجز بنجاح!' : 'Booking Confirmed!' }} <i class="fa-solid fa-circle-check" style="color:#C5A028;"></i></h1>
             <p>{{ $isAr ? 'سيتواصل معك فريقنا خلال 24 ساعة لتأكيد حجزك' : 'Our team will contact you within 24 hours to confirm your booking.' }}</p>
             <div class="ref-badge">
                 <i class="fa-solid fa-hashtag fa-xs"></i>
@@ -217,7 +217,7 @@
         <div class="step-item">
             <div class="step-num">4</div>
             <div>
-                <div class="step-text-title">{{ $isAr ? 'استمتع برحلتك! ✈' : 'Enjoy your trip! ✈' }}</div>
+                <div class="step-text-title">{{ $isAr ? 'استمتع برحلتك!' : 'Enjoy your trip!' }} <i class="fa-solid fa-plane-up" style="color:#C5A028;"></i></div>
                 <div class="step-text-sub">{{ $isAr ? 'فريقنا معك طوال الرحلة لأي مساعدة تحتاجها' : 'Our team is with you throughout your journey.' }}</div>
             </div>
         </div>

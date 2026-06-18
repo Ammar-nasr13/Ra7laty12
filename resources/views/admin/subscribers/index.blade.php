@@ -14,7 +14,7 @@
 </div>
 
 <form method="GET" class="admin-search-bar">
-    <input type="text" name="search" class="admin-input" placeholder="🔍  {{ __('admin.search_email') }}" value="{{ request('search') }}" style="flex:1;">
+    <input type="text" name="search" class="admin-input" placeholder="{{ __('admin.search_email') }}" value="{{ request('search') }}" style="flex:1;">
     <button type="submit" class="admin-btn admin-btn-primary"><i class="fa-solid fa-magnifying-glass"></i></button>
     @if(request('search'))
         <a href="{{ route('admin.subscribers.index') }}" class="admin-btn admin-btn-secondary">{{ __('admin.clear') }}</a>
