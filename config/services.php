@@ -36,10 +36,10 @@ return [
     ],
 
     'appwrite' => [
-        'endpoint' => env('APPWRITE_ENDPOINT', 'https://cloud.appwrite.io/v1'),
-        'project_id' => env('APPWRITE_PROJECT_ID'),
+        'endpoint' => env('APPWRITE_ENDPOINT', 'https://appwrite.etihadalmdina.com/v1'),
+        'project_id' => env('APPWRITE_PROJECT_ID', '69f21c73000621939422'),
         'api_key' => env('APPWRITE_API_KEY'),
-        'database_id' => env('APPWRITE_DATABASE_ID'),
+        'database_id' => env('APPWRITE_DATABASE_ID', '6a32ee91000b40dd8d3c'),
         'collections' => [
             'countries' => env('APPWRITE_COUNTRIES_COLLECTION', 'countries'),
             'destinations' => env('APPWRITE_DESTINATIONS_COLLECTION', 'destinations'),
