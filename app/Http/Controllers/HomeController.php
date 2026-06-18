@@ -6,9 +6,30 @@ use App\Models\Destination;
 use App\Models\Testimonial;
 use App\Models\Trip;
 use App\Models\Country;
+use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {
+    public function submitReview(Request $request)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:100',
+            'rating' => 'required|integer|min:1|max:5',
+            'comment' => 'required|string|min:5|max:1000',
+        ]);
+
+        Testimonial::create([
+            'name' => $validated['name'],
+            'rating' => (int) $validated['rating'],
+            'comment_ar' => $validated['comment'],
+            'comment_en' => $validated['comment'],
+            'is_active' => true,
+            'avatar_url' => 'https://i.pravatar.cc/200?img=' . rand(1, 70),
+        ]);
+
+        return redirect()->back()->with('success', app()->getLocale() === 'ar' ? 'تم إضافة رأيك بنجاح!' : 'Your review has been submitted successfully!');
+    }
+
     public function index()
     {
         $testimonials = Testimonial::where('is_active', true)->with('media')->get();

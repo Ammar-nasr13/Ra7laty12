@@ -24,6 +24,8 @@ Route::post('/lang/{locale}', [HomeController::class, 'setLang'])
     ->name('lang.switch')
     ->where('locale', 'ar|en');
 
+Route::post('/testimonials/submit', [HomeController::class, 'submitReview'])->name('testimonials.submit');
+
 Route::get('/destinations', [DestinationController::class, 'index'])->name('destinations.index');
 Route::get('/destinations/{destination}', [DestinationController::class, 'show'])->name('destinations.show');
 

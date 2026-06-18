@@ -334,6 +334,60 @@
             </div>
             @endforelse
         </div>
+
+        {{-- Form to Add a Review --}}
+        <div class="fade-up" style="max-width: 600px; margin: 4rem auto 0; background: white; padding: 2.5rem; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); border: 1px solid #F0E6D2;">
+            <h3 style="font-size: 1.5rem; font-weight: 800; color: #1A3A5C; text-align: center; margin-bottom: 1.5rem;" data-i18n="addReviewTitle">
+                {{ $isAr ? 'شاركنا رأيك في خدماتنا' : 'Share Your Experience' }}
+            </h3>
+            
+            @if(session('success'))
+                <div style="background: #E8F5E9; color: #2E7D32; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; text-align: center; font-weight: 600;">
+                    {{ session('success') }}
+                </div>
+            @endif
+
+            <form action="{{ route('testimonials.submit') }}" method="POST" style="display: flex; flex-direction: column; gap: 1.25rem;">
+                @csrf
+                <div>
+                    <label style="display: block; font-size: 0.9rem; font-weight: 700; color: #1A3A5C; margin-bottom: 0.5rem;" data-i18n="reviewNameLabel">
+                        {{ $isAr ? 'الاسم بالكامل' : 'Full Name' }}
+                    </label>
+                    <input type="text" name="name" required placeholder="{{ $isAr ? 'مثال: محمد أحمد' : 'e.g. John Doe' }}" style="width: 100%; padding: 0.75rem 1rem; border: 1px solid #CCC; border-radius: 8px; font-size: 0.95rem; outline: none; transition: border-color 0.3s;" onfocus="this.style.borderColor='#C5A028'" onblur="this.style.borderColor='#CCC'">
+                </div>
+
+                <div>
+                    <label style="display: block; font-size: 0.9rem; font-weight: 700; color: #1A3A5C; margin-bottom: 0.5rem;" data-i18n="reviewRatingLabel">
+                        {{ $isAr ? 'تقييمك للخدمة' : 'Your Rating' }}
+                    </label>
+                    <div style="display: flex; gap: 0.5rem; flex-direction: row-reverse; justify-content: flex-end;" class="rating-stars-input">
+                        @for($r = 5; $r >= 1; $r--)
+                            <input type="radio" id="star-{{ $r }}" name="rating" value="{{ $r }}" required style="display: none;">
+                            <label for="star-{{ $r }}" style="font-size: 2rem; color: #DDD; cursor: pointer; transition: color 0.2s; user-select: none;">★</label>
+                        @endfor
+                    </div>
+                </div>
+
+                <style>
+                    .rating-stars-input label:hover,
+                    .rating-stars-input label:hover ~ label,
+                    .rating-stars-input input:checked ~ label {
+                        color: #C5A028 !important;
+                    }
+                </style>
+
+                <div>
+                    <label style="display: block; font-size: 0.9rem; font-weight: 700; color: #1A3A5C; margin-bottom: 0.5rem;" data-i18n="reviewCommentLabel">
+                        {{ $isAr ? 'رأيك وتجربتك بالتفصيل' : 'Your Review' }}
+                    </label>
+                    <textarea name="comment" rows="4" required placeholder="{{ $isAr ? 'اكتب رأيك هنا...' : 'Write your feedback here...' }}" style="width: 100%; padding: 0.75rem 1rem; border: 1px solid #CCC; border-radius: 8px; font-size: 0.95rem; resize: vertical; outline: none; transition: border-color 0.3s;" onfocus="this.style.borderColor='#C5A028'" onblur="this.style.borderColor='#CCC'"></textarea>
+                </div>
+
+                <button type="submit" class="btn-gold" style="width: 100%; padding: 0.9rem; border: none; font-size: 1.05rem; font-weight: 700; border-radius: 8px; cursor: pointer; transition: background 0.3s;">
+                    {{ $isAr ? 'إرسال التقييم' : 'Submit Review' }}
+                </button>
+            </form>
+        </div>
     </div>
 </section>
 
