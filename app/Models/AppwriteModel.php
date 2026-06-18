@@ -723,13 +723,23 @@ class AppwriteQueryBuilder
         }
 
         $service = app(AppwriteService::class);
-        $collectionId = $service->getCollectionId($this->collectionName);
-        $response = $service->databases()->listDocuments(
-            $service->getDatabaseId(),
-            $collectionId,
-            $this->queries
-        );
-        return $response['total'] ?? 0;
+        $databases = $service->databases();
+        if (!$databases) {
+            return 0;
+        }
+
+        try {
+            $collectionId = $service->getCollectionId($this->collectionName);
+            $response = $databases->listDocuments(
+                $service->getDatabaseId(),
+                $collectionId,
+                $this->queries
+            );
+            return $response['total'] ?? 0;
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error("Appwrite count error for {$this->collectionName}: " . $e->getMessage());
+            return 0;
+        }
     }
 
     /**
@@ -760,32 +770,60 @@ class AppwriteQueryBuilder
         $offset = ($page - 1) * $perPage;
         
         $service = app(AppwriteService::class);
+        $databases = $service->databases();
+        if (!$databases) {
+            return new LengthAwarePaginator(
+                collect(),
+                0,
+                $perPage,
+                $page,
+                [
+                    'path' => LengthAwarePaginator::resolveCurrentPath(),
+                    'pageName' => $pageName,
+                ]
+            );
+        }
+
         $collectionId = $service->getCollectionId($this->collectionName);
         
-        // Get total count first
-        $response = $service->databases()->listDocuments(
-            $service->getDatabaseId(),
-            $collectionId,
-            $this->queries
-        );
-        $total = $response['total'] ?? 0;
+        try {
+            // Get total count first
+            $response = $databases->listDocuments(
+                $service->getDatabaseId(),
+                $collectionId,
+                $this->queries
+            );
+            $total = $response['total'] ?? 0;
 
-        // Apply offset and limit
-        $this->queries[] = Query::limit($perPage);
-        $this->queries[] = Query::offset($offset);
+            // Apply offset and limit
+            $this->queries[] = Query::limit($perPage);
+            $this->queries[] = Query::offset($offset);
 
-        $results = $this->get();
+            $results = $this->get();
 
-        return new LengthAwarePaginator(
-            $results,
-            $total,
-            $perPage,
-            $page,
-            [
-                'path' => LengthAwarePaginator::resolveCurrentPath(),
-                'pageName' => $pageName,
-            ]
-        );
+            return new LengthAwarePaginator(
+                $results,
+                $total,
+                $perPage,
+                $page,
+                [
+                    'path' => LengthAwarePaginator::resolveCurrentPath(),
+                    'pageName' => $pageName,
+                ]
+            );
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error("Appwrite paginate error for {$this->collectionName}: " . $e->getMessage());
+            return new LengthAwarePaginator(
+                collect(),
+                0,
+                $perPage,
+                $page,
+                [
+                    'path' => LengthAwarePaginator::resolveCurrentPath(),
+                    'pageName' => $pageName,
+                ]
+            );
+        }
     }
 
     /**
