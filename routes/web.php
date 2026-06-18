@@ -40,28 +40,6 @@ Route::get('/survey', [SurveyController::class, 'index'])->name('survey.index');
 Route::post('/survey', [SurveyController::class, 'store'])->name('survey.store');
 Route::get('/survey/results/{response}', [SurveyController::class, 'results'])->name('survey.results');
 
-// Temporary/helper route to seed Appwrite from browser
-Route::get('/seed-database', function() {
-    try {
-        \Illuminate\Support\Facades\Artisan::call('appwrite:seed');
-        return '<h3>Appwrite Database Seeded Successfully!</h3><pre>' . \Illuminate\Support\Facades\Artisan::output() . '</pre>';
-    } catch (\Exception $e) {
-        return '<h3>Error Seeding Database:</h3><pre>' . $e->getMessage() . '</pre>';
-    }
-});
-
-// Temporary route to view laravel logs from browser
-Route::get('/view-logs', function() {
-    $logPath = storage_path('logs/laravel.log');
-    if (!file_exists($logPath)) {
-        return 'Log file not found.';
-    }
-    $content = file_get_contents($logPath);
-    $lines = explode("\n", $content);
-    $lastLines = array_slice($lines, -200);
-    return '<h3>Last 200 Lines of Laravel Log:</h3><pre>' . htmlspecialchars(implode("\n", $lastLines)) . '</pre>';
-});
-
 // ─── Admin Routes ───────────────────────────────────────────────────
 Route::prefix('admin')->name('admin.')->group(function () {
 
