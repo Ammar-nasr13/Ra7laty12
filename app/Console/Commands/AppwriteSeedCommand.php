@@ -192,7 +192,7 @@ class AppwriteSeedCommand extends Command
         foreach ($countries as $c) {
             $existing = $this->appwrite->list('countries', [\Appwrite\Query::equal('slug', $c['slug'])]);
             if (empty($existing)) {
-                $doc = $this->appwrite->create('countries', array_merge($c, ['is_active' => true]));
+                $doc = $this->appwrite->create('countries', $c);
                 $map[$c['slug']] = $doc['$id'];
             } else {
                 $map[$c['slug']] = $existing[0]['$id'];
