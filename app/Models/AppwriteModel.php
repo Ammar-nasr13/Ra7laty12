@@ -14,6 +14,7 @@ abstract class AppwriteModel implements UrlRoutable
     protected string $collectionName;
     protected array $attributes = [];
     public bool $exists = false;
+    protected static array $resolvingAccessors = [];
 
     public function __construct(array $attributes = [], bool $exists = false)
     {
@@ -92,10 +93,16 @@ abstract class AppwriteModel implements UrlRoutable
             return $this->attributes['is_active'] ?? true;
         }
 
-        // Handle Laravel accessor: getXXXAttribute
+        // Handle Laravel accessor: getXXXAttribute with recursion guard
         $accessor = 'get' . \Illuminate\Support\Str::studly($key) . 'Attribute';
-        if (method_exists($this, $accessor)) {
-            return $this->$accessor();
+        if (method_exists($this, $accessor) && !isset(self::$resolvingAccessors[static::class][$key])) {
+            self::$resolvingAccessors[static::class][$key] = true;
+            try {
+                $value = $this->$accessor();
+            } finally {
+                unset(self::$resolvingAccessors[static::class][$key]);
+            }
+            return $value;
         }
 
         // Handle Laravel translatable model logic
