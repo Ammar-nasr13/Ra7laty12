@@ -5,6 +5,7 @@ namespace App\Providers;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Facades\Auth;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -26,5 +27,9 @@ class AppServiceProvider extends ServiceProvider
         if (env('APP_ENV') === 'production' || env('FORCE_HTTPS', true)) {
             URL::forceScheme('https');
         }
+
+        Auth::provider('appwrite', function ($app, array $config) {
+            return new AppwriteUserProvider();
+        });
     }
 }

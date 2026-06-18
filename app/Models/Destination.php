@@ -2,47 +2,44 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Spatie\MediaLibrary\HasMedia;
-use Spatie\MediaLibrary\InteractsWithMedia;
-use Spatie\Translatable\HasTranslations;
-
-class Destination extends Model implements HasMedia
+class Destination extends AppwriteModel
 {
-    use HasTranslations, InteractsWithMedia;
-
+    protected string $collectionName = 'destinations';
+    
     public $translatable = ['name', 'description', 'meta_title', 'meta_desc', 'meta_keywords'];
 
-    protected $fillable = [
-        'country_id', 'name', 'description',
-        'category', 'is_featured', 'sort_order',
-        'meta_title', 'meta_desc', 'meta_keywords',
-    ];
-
-    protected $casts = [
-        'is_featured' => 'boolean',
-    ];
-
-    public function registerMediaCollections(): void
+    public function country()
     {
-        $this->addMediaCollection('image')->singleFile();
-        $this->addMediaCollection('gallery');
+        return $this->country_id ? Country::find($this->country_id) : null;
     }
 
-    public function country(): BelongsTo
+    public function trips()
     {
-        return $this->belongsTo(Country::class);
-    }
-
-    public function trips(): HasMany
-    {
-        return $this->hasMany(Trip::class);
+        return Trip::where('destination_id', $this->id);
     }
 
     public function getImageUrlAttribute(): string
     {
-        return $this->getFirstMediaUrl('image');
+        return $this->image_url ?: '';
+    }
+
+    /**
+     * Fallback for Spatie Medialibrary compatibility
+     */
+    public function getFirstMediaUrl(string $collection = 'image'): string
+    {
+        return $this->image_url ?: '';
+    }
+
+    public function getFirstMedia(string $collection = 'image')
+    {
+        if (empty($this->image_url)) return null;
+        
+        // Return dummy object that supports getUrl()
+        return new class($this->image_url) {
+            protected string $url;
+            public function __construct($url) { $this->url = $url; }
+            public function getUrl() { return $this->url; }
+        };
     }
 }

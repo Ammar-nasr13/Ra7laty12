@@ -73,7 +73,7 @@ return [
         ],
 
         'admins' => [
-            'driver' => 'eloquent',
+            'driver' => 'appwrite',
             'model' => App\Models\Admin::class,
         ],
 

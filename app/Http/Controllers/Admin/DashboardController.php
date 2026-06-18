@@ -16,24 +16,43 @@ class DashboardController extends Controller
         $activeTrips      = Trip::active()->count();
         $totalSubscribers = NewsletterSubscriber::count();
 
-        $recentBookings = Booking::with('trip')
-            ->latest()
+        $recentBookings = Booking::latest()
             ->take(10)
             ->get();
 
-        $topTrips = Booking::selectRaw('trip_id, count(*) as total')
-            ->groupBy('trip_id')
-            ->orderByDesc('total')
-            ->with('trip')
+        $allBookings = Booking::all();
+
+        // Top Trips
+        $topTrips = $allBookings->groupBy('trip_id')
+            ->map(function ($group, $tripId) {
+                $first = $group->first();
+                $trip = $first ? $first->trip : null;
+                return (object)[
+                    'trip_id' => $tripId,
+                    'total' => $group->count(),
+                    'trip' => $trip
+                ];
+            })
+            ->sortByDesc('total')
             ->take(5)
-            ->get();
+            ->values();
 
         // Monthly bookings for last 6 months
-        $monthlyBookings = Booking::selectRaw('MONTH(created_at) as month, YEAR(created_at) as year, count(*) as total')
-            ->where('created_at', '>=', now()->subMonths(6))
-            ->groupByRaw('YEAR(created_at), MONTH(created_at)')
-            ->orderByRaw('YEAR(created_at), MONTH(created_at)')
-            ->get();
+        $monthlyBookings = $allBookings->filter(function ($b) {
+                return $b->created_at && $b->created_at >= now()->subMonths(6);
+            })
+            ->groupBy(function ($b) {
+                return $b->created_at->format('Y-m');
+            })
+            ->map(function ($group) {
+                $first = $group->first();
+                return (object)[
+                    'month' => $first->created_at->month,
+                    'year' => $first->created_at->year,
+                    'total' => $group->count(),
+                ];
+            })
+            ->values();
 
         return view('admin.dashboard.index', compact(
             'totalBookings', 'totalRevenue',

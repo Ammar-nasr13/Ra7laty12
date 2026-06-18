@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 
 class TripController extends Controller
 {
-    public function show(int $id)
+    public function show(string $id)
     {
         $trip = Trip::with('media')
             ->where('id', $id)

@@ -2,37 +2,46 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Spatie\MediaLibrary\HasMedia;
-use Spatie\MediaLibrary\InteractsWithMedia;
-
-class Testimonial extends Model implements HasMedia
+class Testimonial extends AppwriteModel
 {
-    use InteractsWithMedia;
+    protected string $collectionName = 'testimonials';
 
-    protected $fillable = [
-        'booking_id', 'name', 'review', 'rating', 'is_active',
-    ];
-
-    protected $casts = [
-        'is_active' => 'boolean',
-        'rating'    => 'integer',
-    ];
-
-    public function registerMediaCollections(): void
+    public function booking()
     {
-        $this->addMediaCollection('avatar')
-            ->singleFile();
+        return $this->booking_id ? Booking::find($this->booking_id) : null;
     }
 
-    public function booking(): BelongsTo
+    /**
+     * Get review text based on locale (fallback to comment_ar or comment_en)
+     */
+    public function getReviewAttribute(): string
     {
-        return $this->belongsTo(Booking::class);
+        $lang = app()->getLocale();
+        $key = "comment_{$lang}";
+        return $this->attributes[$key] ?? ($this->attributes['comment_ar'] ?? ($this->attributes['comment_en'] ?? ''));
     }
 
     public function getAvatarUrlAttribute(): string
     {
-        return $this->getFirstMediaUrl('avatar');
+        return $this->avatar_url ?: 'https://i.pravatar.cc/200?img=11';
+    }
+
+    /**
+     * Fallback for Spatie Medialibrary compatibility
+     */
+    public function getFirstMediaUrl(string $collection = 'avatar'): string
+    {
+        return $this->avatar_url ?: '';
+    }
+
+    public function getFirstMedia(string $collection = 'avatar')
+    {
+        if (empty($this->avatar_url)) return null;
+
+        return new class($this->avatar_url) {
+            protected string $url;
+            public function __construct($url) { $this->url = $url; }
+            public function getUrl() { return $this->url; }
+        };
     }
 }

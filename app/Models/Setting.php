@@ -2,12 +2,11 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Cache;
 
-class Setting extends Model
+class Setting extends AppwriteModel
 {
-    protected $fillable = ['key', 'value', 'group'];
+    protected string $collectionName = 'settings';
 
     /**
      * Get a setting value by key, with optional default.
@@ -29,5 +28,25 @@ class Setting extends Model
     {
         static::updateOrCreate(['key' => $key], ['value' => $value, 'group' => $group]);
         Cache::forget('site_settings');
+    }
+
+    /**
+     * Custom updateOrCreate implementation for settings
+     */
+    public static function updateOrCreate(array $attributes, array $values = [])
+    {
+        $key = $attributes['key'] ?? null;
+        if ($key) {
+            $existing = static::where('key', $key)->first();
+            if ($existing) {
+                $existing->value = $values['value'] ?? $existing->value;
+                $existing->group = $values['group'] ?? $existing->group;
+                $existing->save();
+                return $existing;
+            }
+        }
+        $model = new static(array_merge($attributes, $values));
+        $model->save();
+        return $model;
     }
 }

@@ -35,4 +35,22 @@ return [
         ],
     ],
 
+    'appwrite' => [
+        'endpoint' => env('APPWRITE_ENDPOINT', 'https://cloud.appwrite.io/v1'),
+        'project_id' => env('APPWRITE_PROJECT_ID'),
+        'api_key' => env('APPWRITE_API_KEY'),
+        'database_id' => env('APPWRITE_DATABASE_ID'),
+        'collections' => [
+            'countries' => env('APPWRITE_COUNTRIES_COLLECTION', 'countries'),
+            'destinations' => env('APPWRITE_DESTINATIONS_COLLECTION', 'destinations'),
+            'trips' => env('APPWRITE_TRIPS_COLLECTION', 'trips'),
+            'bookings' => env('APPWRITE_BOOKINGS_COLLECTION', 'bookings'),
+            'testimonials' => env('APPWRITE_TESTIMONIALS_COLLECTION', 'testimonials'),
+            'surveys' => env('APPWRITE_SURVEYS_COLLECTION', 'survey_responses'),
+            'subscribers' => env('APPWRITE_SUBSCRIBERS_COLLECTION', 'newsletter_subscribers'),
+            'admins' => env('APPWRITE_ADMINS_COLLECTION', 'admins'),
+            'settings' => env('APPWRITE_SETTINGS_COLLECTION', 'settings'),
+        ],
+    ],
+
 ];

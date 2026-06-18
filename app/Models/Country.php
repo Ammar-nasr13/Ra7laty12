@@ -2,24 +2,14 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Spatie\Translatable\HasTranslations;
-
-class Country extends Model
+class Country extends AppwriteModel
 {
-    use HasTranslations;
-
+    protected string $collectionName = 'countries';
+    
     public $translatable = ['name'];
 
-    protected $fillable = ['name', 'slug', 'flag', 'is_active'];
-
-    protected $casts = [
-        'is_active' => 'boolean',
-    ];
-
-    public function destinations(): HasMany
+    public function destinations()
     {
-        return $this->hasMany(Destination::class);
+        return Destination::where('country_id', $this->id);
     }
 }

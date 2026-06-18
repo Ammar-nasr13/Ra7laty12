@@ -29,7 +29,12 @@ class DestinationController extends Controller
             ->orderBy('sort_order');
 
         if ($request->filled('country')) {
-            $query->whereHas('country', fn($q) => $q->where('slug', $request->input('country')));
+            $country = Country::where('slug', $request->input('country'))->first();
+            if ($country) {
+                $query->where('country_id', $country->id);
+            } else {
+                $query->where('country_id', 'non_existent_id');
+            }
         }
 
         if ($request->filled('category')) {

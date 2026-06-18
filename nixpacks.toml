@@ -16,7 +16,7 @@ cmds = [
     "npm run build",
     "touch storage/database.sqlite",
     "chmod -R 777 storage bootstrap/cache",
-    "php artisan migrate --force --seed",
+    "php artisan migrate --force",
     "chmod 777 storage/database.sqlite",
     "php artisan storage:link"
 ]

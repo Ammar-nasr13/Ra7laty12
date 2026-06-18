@@ -2,24 +2,15 @@
 
 namespace App\Models;
 
-use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
+use Illuminate\Auth\Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-class Admin extends Authenticatable
+class Admin extends AppwriteModel implements AuthenticatableContract
 {
-    use Notifiable;
+    use Authenticatable, Notifiable;
 
-    protected $fillable = [
-        'name', 'email', 'password', 'role',
-    ];
-
-    protected $hidden = [
-        'password', 'remember_token',
-    ];
-
-    protected $casts = [
-        'password' => 'hashed',
-    ];
+    protected string $collectionName = 'admins';
 
     public function isSuperAdmin(): bool
     {

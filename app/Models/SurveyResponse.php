@@ -2,8 +2,6 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-
 /**
  * @property string $budget
  * @property string $travel_type
@@ -14,18 +12,44 @@ use Illuminate\Database\Eloquent\Model;
  * @property string|null $phone
  * @property string|null $message
  */
-class SurveyResponse extends Model
+class SurveyResponse extends AppwriteModel
 {
-    protected $fillable = [
-        'name',
-        'email',
-        'phone',
-        'budget',
-        'travel_type',
-        'preferred_climate',
-        'duration_preference',
-        'message',
-    ];
+    protected string $collectionName = 'surveys';
+
+    public function __get($key)
+    {
+        if ($key === 'preferred_climate') {
+            return $this->attributes['climate'] ?? null;
+        }
+        if ($key === 'duration_preference') {
+            return $this->attributes['duration'] ?? null;
+        }
+        return parent::__get($key);
+    }
+
+    public function __set($key, $value)
+    {
+        if ($key === 'preferred_climate') {
+            $this->attributes['climate'] = $value;
+            return;
+        }
+        if ($key === 'duration_preference') {
+            $this->attributes['duration'] = $value;
+            return;
+        }
+        parent::__set($key, $value);
+    }
+
+    public function __isset($key)
+    {
+        if ($key === 'preferred_climate') {
+            return isset($this->attributes['climate']);
+        }
+        if ($key === 'duration_preference') {
+            return isset($this->attributes['duration']);
+        }
+        return parent::__isset($key);
+    }
 
     /**
      * Returns the subset of fields used by the JS matchTrips() function

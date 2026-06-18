@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Destination;
 use App\Models\Testimonial;
 use App\Models\Trip;
+use App\Models\Country;
 
 class HomeController extends Controller
 {
@@ -12,11 +13,13 @@ class HomeController extends Controller
     {
         $testimonials = Testimonial::where('is_active', true)->with('media')->get();
 
-        $egyptDestinations = Destination::whereHas('country', fn($q) => $q->where('slug', 'egypt'))
-            ->with(['country', 'media'])
-            ->orderBy('sort_order')
-            ->take(6)
-            ->get();
+        $egypt = Country::where('slug', 'egypt')->first();
+        $egyptDestinations = $egypt
+            ? Destination::where('country_id', $egypt->id)
+                ->orderBy('sort_order')
+                ->take(6)
+                ->get()
+            : collect();
 
         return view('home', compact('testimonials', 'egyptDestinations'));
     }

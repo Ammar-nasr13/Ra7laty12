@@ -15,13 +15,14 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        $this->call([
-            CountrySeeder::class,
-            DestinationSeeder::class,
-            TripSeeder::class,
-            TestimonialSeeder::class,
-            AdminSeeder::class,
-            SettingSeeder::class,
-        ]);
+        // Appwrite seed data is handled via php artisan appwrite:seed command
+        // $this->call([
+        //     CountrySeeder::class,
+        //     DestinationSeeder::class,
+        //     TripSeeder::class,
+        //     TestimonialSeeder::class,
+        //     AdminSeeder::class,
+        //     SettingSeeder::class,
+        // ]);
     }
 }

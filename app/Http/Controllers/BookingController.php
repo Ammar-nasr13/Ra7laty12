@@ -8,13 +8,13 @@ use App\Models\Trip;
 
 class BookingController extends Controller
 {
-    public function show(int $id)
+    public function show(string $id)
     {
         $trip = Trip::active()->where('id', $id)->firstOrFail();
         return view('trips.booking', compact('trip'));
     }
 
-    public function store(StoreBookingRequest $request, int $id)
+    public function store(StoreBookingRequest $request, string $id)
     {
         $trip = Trip::active()->where('id', $id)->firstOrFail();
 
@@ -46,7 +46,7 @@ class BookingController extends Controller
         return redirect()->route('payment.redirect', $booking);
     }
 
-    public function confirmed(int $id)
+    public function confirmed(string $id)
     {
         $trip      = Trip::where('id', '=', $id)->firstOrFail();
         $bookingId = session('booking_id');

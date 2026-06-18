@@ -2,32 +2,16 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-
-class Booking extends Model
+class Booking extends AppwriteModel
 {
-    protected $fillable = [
-        'trip_id', 'reference', 'name', 'email', 'phone',
-        'adults', 'children', 'travel_date', 'payment_method',
-        'total_price', 'paid_amount_egp', 'notes', 'status', 'confirmed_at',
-        'paymob_order_id', 'paymob_transaction_id', 'paid_at',
-    ];
+    protected string $collectionName = 'bookings';
 
-    protected $casts = [
-        'travel_date'  => 'date',
-        'confirmed_at' => 'datetime',
-        'paid_at'      => 'datetime',
-        'total_price'     => 'decimal:2',
-        'paid_amount_egp' => 'decimal:2',
-    ];
-
-    public function trip(): BelongsTo
+    public function trip()
     {
-        return $this->belongsTo(Trip::class);
+        return $this->trip_id ? Trip::find($this->trip_id) : null;
     }
 
-    public function scopeByStatus($query, string $status)
+    public static function scopeByStatus($query, string $status)
     {
         return $query->where('status', $status);
     }
@@ -40,7 +24,7 @@ class Booking extends Model
             'meeza'         => 'ميزة',
             'instapay'      => 'إنستا باي',
             'vodafone_cash' => 'فودافون كاش',
-            default         => $this->payment_method,
+            default         => $this->payment_method ?: '',
         };
     }
 }

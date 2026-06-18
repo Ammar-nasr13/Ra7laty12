@@ -17,8 +17,7 @@ class TripController extends Controller
 
         if ($request->filled('search')) {
             $search = $request->input('search');
-            $query->whereRaw("JSON_EXTRACT(title, '$.ar') LIKE ?", ["%$search%"])
-                  ->orWhereRaw("JSON_EXTRACT(title, '$.en') LIKE ?", ["%$search%"]);
+            $query->whereRaw("search", ["%$search%"]);
         }
 
         if ($request->filled('category')) {

@@ -14,11 +14,11 @@ use App\Http\Controllers\Admin;
 // ─── Front-end Routes ───────────────────────────────────────────────
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/sitemap.xml', [HomeController::class, 'sitemap'])->name('sitemap');
-Route::get('/trips/{id}', [TripController::class, 'show'])->name('trips.show')->where('id', '[0-9]+');
+Route::get('/trips/{id}', [TripController::class, 'show'])->name('trips.show');
 
-Route::get('/trips/{id}/book',      [BookingController::class, 'show'])->name('trips.book')->where('id', '[0-9]+');
-Route::post('/trips/{id}/book',     [BookingController::class, 'store'])->name('trips.book.store')->where('id', '[0-9]+');
-Route::get('/trips/{id}/confirmed', [BookingController::class, 'confirmed'])->name('trips.book.confirmed')->where('id', '[0-9]+');
+Route::get('/trips/{id}/book',      [BookingController::class, 'show'])->name('trips.book');
+Route::post('/trips/{id}/book',     [BookingController::class, 'store'])->name('trips.book.store');
+Route::get('/trips/{id}/confirmed', [BookingController::class, 'confirmed'])->name('trips.book.confirmed');
 
 Route::post('/lang/{locale}', [HomeController::class, 'setLang'])
     ->name('lang.switch')

@@ -2,90 +2,73 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Spatie\MediaLibrary\HasMedia;
-use Spatie\MediaLibrary\InteractsWithMedia;
-use Spatie\Translatable\HasTranslations;
-
-class Trip extends Model implements HasMedia
+class Trip extends AppwriteModel
 {
-    use HasTranslations, InteractsWithMedia;
+    protected string $collectionName = 'trips';
 
     public $translatable = ['title', 'desc', 'highlights', 'included', 'excluded', 'itinerary', 'meta_title', 'meta_desc', 'meta_keywords'];
 
-    protected $fillable = [
-        'title', 'desc', 'highlights', 'highlight_images',
-        'included', 'excluded', 'itinerary',
-        'destination_id',
-        'price', 'currency', 'duration',
-        'category', 'climate', 'travel_type', 'budget_tier',
-        'color_from', 'color_to', 'is_egyptian',
-        'spots_total', 'spots_left', 'departure_dates',
-        'is_active', 'sort_order',
-        'meta_title', 'meta_desc', 'meta_keywords',
-    ];
-
-    protected $casts = [
-        'travel_type'      => 'array',
-        'departure_dates'  => 'array',
-        'highlight_images' => 'array',
-        'is_egyptian'      => 'boolean',
-        'is_active'        => 'boolean',
-        'price'            => 'decimal:2',
-    ];
-
-    public function registerMediaCollections(): void
+    public function destination()
     {
-        $this->addMediaCollection('image')
-            ->singleFile();
-
-        $this->addMediaCollection('gallery');
+        return $this->destination_id ? Destination::find($this->destination_id) : null;
     }
 
-    public function destination(): BelongsTo
+    public function bookings()
     {
-        return $this->belongsTo(Destination::class);
+        return Booking::where('trip_id', $this->id);
     }
 
-    public function bookings(): HasMany
-    {
-        return $this->hasMany(Booking::class);
-    }
-
-    public function scopeActive($query)
+    public static function scopeActive($query)
     {
         return $query->where('is_active', true);
     }
 
-    public function scopeEgyptian($query)
+    public static function scopeEgyptian($query)
     {
         return $query->where('is_egyptian', true);
     }
 
-    public function scopeInternational($query)
+    public static function scopeInternational($query)
     {
         return $query->where('is_egyptian', false);
     }
 
-    public function scopeByCategory($query, string $cat)
+    public static function scopeByCategory($query, string $cat)
     {
         return $query->where('category', $cat);
     }
 
-    public function scopeByBudget($query, string $tier)
+    public static function scopeByBudget($query, string $tier)
     {
         return $query->where('budget_tier', $tier);
     }
 
-    public function scopeByTravelType($query, string $type)
+    public static function scopeByTravelType($query, string $type)
     {
-        return $query->whereJsonContains('travel_type', $type);
+        return $query->where('travel_type', $type);
     }
 
     public function getImageUrlAttribute(): string
     {
-        return $this->getFirstMediaUrl('image');
+        return $this->image_url ?: '';
+    }
+
+    /**
+     * Fallback for Spatie Medialibrary compatibility
+     */
+    public function getFirstMediaUrl(string $collection = 'image'): string
+    {
+        return $this->image_url ?: '';
+    }
+
+    public function getFirstMedia(string $collection = 'image')
+    {
+        if (empty($this->image_url)) return null;
+
+        return new class($this->image_url) {
+            protected string $url;
+            public function __construct($url) { $this->url = $url; }
+            public function getUrl() { return $this->url; }
+        };
     }
 }
