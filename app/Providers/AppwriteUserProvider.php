@@ -65,4 +65,20 @@ class AppwriteUserProvider implements UserProvider
         $plain = $credentials['password'];
         return Hash::check($plain, $user->getAuthPassword());
     }
+
+    /**
+     * Rehash the user's password if required and supported.
+     */
+    public function rehashPasswordIfRequired(Authenticatable $user, array $credentials, bool $force = false)
+    {
+        // No-op for Appwrite
+    }
+
+    /**
+     * Revalidate a user against the given credentials.
+     */
+    public function revalidateCredentials(Authenticatable $user, array $credentials)
+    {
+        return $this->validateCredentials($user, $credentials);
+    }
 }
