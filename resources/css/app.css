@@ -957,11 +957,4 @@ body {
     outline-offset: 4px;
 }
 
-/* Performance Optimizations: content-visibility */
-.egypt-dest-card,
-.testimonial-card,
-.survey-card,
-.trip-card {
-    content-visibility: auto;
-    contain-intrinsic-size: 450px;
-}
+

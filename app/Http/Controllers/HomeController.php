@@ -32,15 +32,22 @@ class HomeController extends Controller
 
     public function index()
     {
-        $testimonials = Testimonial::where('is_active', true)->with('media')->get();
+        try {
+            $testimonials = Testimonial::where('is_active', true)->get();
+        } catch (\Throwable $e) {
+            $testimonials = collect();
+        }
 
-        $egypt = Country::where('slug', 'egypt')->first();
-        $egyptDestinations = $egypt
-            ? Destination::where('country_id', $egypt->id)
-                ->orderBy('sort_order')
-                ->take(6)
-                ->get()
-            : collect();
+        try {
+            $egypt = Country::where('slug', 'egypt')->first();
+            $egyptDestinations = $egypt
+                ? Destination::where('country_id', $egypt->id)
+                    ->take(6)
+                    ->get()
+                : collect();
+        } catch (\Throwable $e) {
+            $egyptDestinations = collect();
+        }
 
         return view('home', compact('testimonials', 'egyptDestinations'));
     }
@@ -48,8 +55,13 @@ class HomeController extends Controller
     public function sitemap()
     {
         $sitemapXml = \Illuminate\Support\Facades\Cache::remember('sitemap_xml', 86400, function() {
-            $trips = Trip::active()->orderBy('sort_order')->get();
-            $destinations = Destination::orderBy('sort_order')->get();
+            try {
+                $trips = Trip::active()->orderBy('id')->get();
+                $destinations = Destination::orderBy('id')->get();
+            } catch (\Throwable $e) {
+                $trips = collect();
+                $destinations = collect();
+            }
             return view('sitemap', compact('trips', 'destinations'))->render();
         });
 

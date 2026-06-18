@@ -66,46 +66,49 @@
     <!-- Font Awesome 6 Free -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer">
 
-    @php
-        $__dbTrips = \Illuminate\Support\Facades\Cache::remember('active_trips_data_json_' . app()->getLocale(), 3600, function() {
-            return \App\Models\Trip::where('is_active', true)
-                ->orderBy('sort_order')
-                ->orderBy('id')
-                ->get()
-                ->map(fn($t) => [
-                    'id'              => $t->id,
-                    'title_ar'        => $t->getTranslation('title', 'ar'),
-                    'title_en'        => $t->getTranslation('title', 'en'),
-                    'country_ar'      => $t->destination?->getTranslation('name', 'ar') ?? '',
-                    'country_en'      => $t->destination?->getTranslation('name', 'en') ?? '',
-                    'desc_ar'         => $t->getTranslation('desc', 'ar'),
-                    'desc_en'         => $t->getTranslation('desc', 'en'),
-                    'highlights_ar'   => $t->getTranslation('highlights', 'ar') ?? [],
-                    'highlights_en'   => $t->getTranslation('highlights', 'en') ?? [],
-                    'price'           => (float) $t->price,
-                    'currency'        => $t->currency,
-                    'duration'        => $t->duration,
-                    'category'        => $t->category,
-                    'climate'         => $t->climate,
-                    'travel_type'     => $t->travel_type ?? [],
-                    'budget_tier'     => $t->budget_tier,
-                    'color_from'      => $t->color_from,
-                    'color_to'        => $t->color_to,
-                    'is_egyptian'     => (bool) $t->is_egyptian,
-                    'spots_total'     => $t->spots_total,
-                    'spots_left'      => $t->spots_left,
-                    'departure_dates' => $t->departure_dates ?? [],
-                    'image'           => $t->getFirstMediaUrl('image') ?: null,
-                ])
-                ->values()
-                ->toArray();
-        });
-    @endphp
-    <script>window.__DB_TRIPS = @json($__dbTrips);</script>
-
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     @stack('styles')
+
+    @php
+        try {
+            $__dbTrips = \Illuminate\Support\Facades\Cache::remember('active_trips_data_json_' . app()->getLocale(), 3600, function() {
+                return \App\Models\Trip::where('is_active', true)
+                    ->orderBy('id')
+                    ->get()
+                    ->map(fn($t) => [
+                        'id'              => $t->id,
+                        'title_ar'        => $t->getTranslation('title', 'ar'),
+                        'title_en'        => $t->getTranslation('title', 'en'),
+                        'country_ar'      => $t->destination?->getTranslation('name', 'ar') ?? '',
+                        'country_en'      => $t->destination?->getTranslation('name', 'en') ?? '',
+                        'desc_ar'         => $t->getTranslation('desc', 'ar'),
+                        'desc_en'         => $t->getTranslation('desc', 'en'),
+                        'highlights_ar'   => $t->getTranslation('highlights', 'ar') ?? [],
+                        'highlights_en'   => $t->getTranslation('highlights', 'en') ?? [],
+                        'price'           => (float) $t->price,
+                        'currency'        => $t->currency,
+                        'duration'        => $t->duration,
+                        'category'        => $t->category,
+                        'climate'         => $t->climate,
+                        'travel_type'     => $t->travel_type ?? [],
+                        'budget_tier'     => $t->budget_tier,
+                        'color_from'      => $t->color_from,
+                        'color_to'        => $t->color_to,
+                        'is_egyptian'     => (bool) $t->is_egyptian,
+                        'spots_total'     => $t->spots_total,
+                        'spots_left'      => $t->spots_left,
+                        'departure_dates' => $t->departure_dates ?? [],
+                        'image'           => $t->getFirstMediaUrl('image') ?: null,
+                    ])
+                    ->values()
+                    ->toArray();
+            });
+        } catch (\Throwable $e) {
+            $__dbTrips = [];
+        }
+    @endphp
+    <script>window.__DB_TRIPS = @json($__dbTrips ?? []);</script>
 </head>
 <body>
 
