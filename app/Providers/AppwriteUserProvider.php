@@ -63,7 +63,23 @@ class AppwriteUserProvider implements UserProvider
     public function validateCredentials(Authenticatable $user, array $credentials)
     {
         $plain = $credentials['password'];
-        return Hash::check($plain, $user->getAuthPassword());
+        $hash = $user->getAuthPassword();
+
+        if (empty($hash)) {
+            return false;
+        }
+
+        // If it's a bcrypt hash
+        if (str_starts_with($hash, '$2y$') || str_starts_with($hash, '$2a$')) {
+            try {
+                return Hash::check($plain, $hash);
+            } catch (\Exception $e) {
+                return false;
+            }
+        }
+
+        // Fallback for plain text password comparison
+        return $plain === $hash;
     }
 
     /**
