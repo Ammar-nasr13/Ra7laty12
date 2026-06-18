@@ -19,6 +19,27 @@
 @section('meta_desc', $seoDesc)
 @section('meta_keywords', $seoKeywords)
 
+@section('seo_head')
+<script type="application/ld+json">
+{
+  "@@context": "https://schema.org",
+  "@@type": "TouristDestination",
+  "name": "{{ addslashes($name) }}",
+  "description": "{{ addslashes(Str::limit(strip_tags($desc), 200)) }}",
+  @if($img)
+  "image": "{{ $img->getUrl() }}",
+  @endif
+  @if($destination->country)
+  "containedInPlace": {
+    "@@type": "Country",
+    "name": "{{ addslashes($destination->country->getTranslation('name', $lang)) }}"
+  },
+  @endif
+  "url": "{{ route('destinations.show', $destination->id) }}"
+}
+</script>
+@endsection
+
 @section('content')
 
 {{-- Hero --}}

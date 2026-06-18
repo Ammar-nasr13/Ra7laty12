@@ -223,12 +223,14 @@ abstract class AppwriteModel implements UrlRoutable
             if ($this->exists && isset($this->attributes['$id'])) {
                 $response = $service->update($this->collectionName, $this->attributes['$id'], $data);
                 $this->attributes = $response;
+                $this->clearCache();
                 return true;
             } else {
                 $id = $this->attributes['$id'] ?? null;
                 $response = $service->create($this->collectionName, $data, $id);
                 $this->attributes = $response;
                 $this->exists = true;
+                $this->clearCache();
                 return true;
             }
         } catch (\Exception $e) {
@@ -281,7 +283,11 @@ abstract class AppwriteModel implements UrlRoutable
     {
         if ($this->exists && isset($this->attributes['$id'])) {
             $service = self::getAppwriteService();
-            return $service->delete($this->collectionName, $this->attributes['$id']);
+            $deleted = $service->delete($this->collectionName, $this->attributes['$id']);
+            if ($deleted) {
+                $this->clearCache();
+            }
+            return $deleted;
         }
         return false;
     }
@@ -317,6 +323,18 @@ abstract class AppwriteModel implements UrlRoutable
     public static function __callStatic($method, $parameters)
     {
         return static::query()->$method(...$parameters);
+    }
+
+    /**
+     * Clear cached frontend/sitemap data on change
+     */
+    protected function clearCache(): void
+    {
+        if (in_array($this->collectionName, ['trips', 'destinations', 'countries', 'testimonials'])) {
+            \Illuminate\Support\Facades\Cache::forget('active_trips_data_json_ar');
+            \Illuminate\Support\Facades\Cache::forget('active_trips_data_json_en');
+            \Illuminate\Support\Facades\Cache::forget('sitemap_xml');
+        }
     }
 }
 
