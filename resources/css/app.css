@@ -677,6 +677,23 @@ body {
     letter-spacing: 2px;
 }
 
+.testimonials-scroll-container {
+    display: flex;
+    gap: 1.5rem;
+    overflow-x: auto;
+    padding: 1.5rem 0.5rem;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none; /* Firefox */
+}
+.testimonials-scroll-container::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+}
+.testimonials-scroll-container .testimonial-card {
+    flex: 0 0 320px;
+    scroll-snap-align: start;
+    margin: 0;
+}
+
 /* ========================
    Ticker / Marquee
    ======================== */

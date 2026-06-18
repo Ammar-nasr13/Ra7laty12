@@ -40,6 +40,7 @@ return [
         'project_id' => env('APPWRITE_PROJECT_ID', '6a32ee5e0018a83516bc'),
         'api_key' => env('APPWRITE_API_KEY'),
         'database_id' => env('APPWRITE_DATABASE_ID', '6a32ee91000b40dd8d3c'),
+        'image_bucket_id' => env('APPWRITE_IMAGE_BUCKET_ID', '6a33db0d003899080b7d'),
         'collections' => [
             'countries' => env('APPWRITE_COUNTRIES_COLLECTION', 'countries'),
             'destinations' => env('APPWRITE_DESTINATIONS_COLLECTION', 'destinations'),

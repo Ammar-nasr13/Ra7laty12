@@ -135,9 +135,14 @@ class TripController extends Controller
     {
         $images = $existing;
         if ($request->hasFile('highlight_images')) {
+            $service = app(\App\Services\AppwriteService::class);
+            $bucketId = config('services.appwrite.image_bucket_id', '6a33db0d003899080b7d');
             foreach ($request->file('highlight_images') as $idx => $file) {
-                if ($file) {
-                    $images[$idx] = $file->store('highlights', 'public');
+                if ($file instanceof \Illuminate\Http\UploadedFile) {
+                    $url = $service->uploadFile($bucketId, $file);
+                    if ($url) {
+                        $images[$idx] = $url;
+                    }
                 }
             }
         }

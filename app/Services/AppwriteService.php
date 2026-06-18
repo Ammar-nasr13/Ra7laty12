@@ -4,6 +4,7 @@ namespace App\Services;
 
 use Appwrite\Client;
 use Appwrite\Services\Databases;
+use Appwrite\Services\Storage;
 use Appwrite\Query;
 use Illuminate\Support\Facades\Log;
 
@@ -11,6 +12,7 @@ class AppwriteService
 {
     protected Client $client;
     protected ?Databases $databases = null;
+    protected ?Storage $storage = null;
     protected string $databaseId = '';
 
     public function __construct()
@@ -33,6 +35,7 @@ class AppwriteService
             }
 
             $this->databases = new Databases($this->client);
+            $this->storage = new Storage($this->client);
         } catch (\Exception $e) {
             Log::error("Appwrite Client Initialization failed: " . $e->getMessage());
         }
@@ -153,5 +156,46 @@ class AppwriteService
     public function databases(): ?Databases
     {
         return $this->databases;
+    }
+
+    /**
+     * Expose Storage service
+     */
+    public function storage(): ?Storage
+    {
+        return $this->storage;
+    }
+
+    /**
+     * Upload file to Appwrite storage and return public view URL
+     */
+    public function uploadFile(string $bucketId, \Illuminate\Http\UploadedFile $file): ?string
+    {
+        if (!$this->storage) {
+            return null;
+        }
+
+        try {
+            $path = $file->getRealPath();
+            $fileName = $file->getClientOriginalName();
+
+            // Create Appwrite's InputFile object from temp path
+            $inputFile = \Appwrite\InputFile::fromPath($path, $fileName);
+            
+            // Generate a unique ID for the file
+            $fileId = 'unique()';
+            
+            $response = $this->storage->createFile($bucketId, $fileId, $inputFile);
+            $uploadedFileId = $response['$id'];
+
+            // Build the view URL
+            $endpoint = config('services.appwrite.endpoint') ?: 'https://cloud.appwrite.io/v1';
+            $projectId = config('services.appwrite.project_id') ?: '';
+            
+            return "{$endpoint}/storage/buckets/{$bucketId}/files/{$uploadedFileId}/view?project={$projectId}";
+        } catch (\Exception $e) {
+            Log::error("Appwrite uploadFile error in bucket {$bucketId}: " . $e->getMessage());
+            throw $e;
+        }
     }
 }

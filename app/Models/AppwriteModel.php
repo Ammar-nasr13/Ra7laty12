@@ -336,6 +336,30 @@ abstract class AppwriteModel implements UrlRoutable
             \Illuminate\Support\Facades\Cache::forget('sitemap_xml');
         }
     }
+
+    /**
+     * Add Media From Request (fluent helper for Spatie Medialibrary emulation)
+     */
+    public function addMediaFromRequest(string $key): AppwriteMediaHelper
+    {
+        $file = request()->file($key);
+        return new AppwriteMediaHelper($this, $file);
+    }
+
+    /**
+     * Clear Media Collection (Spatie Medialibrary emulation)
+     */
+    public function clearMediaCollection(string $collectionName): self
+    {
+        if ($collectionName === 'image' || $collectionName === 'main_image') {
+            $this->image_url = '';
+        } elseif ($collectionName === 'avatar') {
+            $this->avatar_url = '';
+        } elseif ($collectionName === 'highlight_images' || $collectionName === 'gallery') {
+            $this->highlight_images = [];
+        }
+        return $this;
+    }
 }
 
 class AppwriteQueryBuilder
@@ -958,5 +982,53 @@ class AppwriteQueryBuilder
             return $this;
         }
         throw new \BadMethodCallException("Method {$method} does not exist on " . get_class($this));
+    }
+}
+
+class AppwriteMediaHelper
+{
+    protected AppwriteModel $model;
+    protected $fileInput;
+
+    public function __construct(AppwriteModel $model, $fileInput)
+    {
+        $this->model = $model;
+        $this->fileInput = $fileInput;
+    }
+
+    public function toMediaCollection(string $collectionName): void
+    {
+        if (empty($this->fileInput)) {
+            return;
+        }
+
+        $bucketId = config('services.appwrite.image_bucket_id', '6a33db0d003899080b7d');
+        $service = $this->model::getAppwriteService();
+
+        if (is_array($this->fileInput)) {
+            $urls = [];
+            foreach ($this->fileInput as $file) {
+                if ($file instanceof \Illuminate\Http\UploadedFile) {
+                    $url = $service->uploadFile($bucketId, $file);
+                    if ($url) {
+                        $urls[] = $url;
+                    }
+                }
+            }
+            if ($collectionName === 'highlight_images' || $collectionName === 'gallery') {
+                $this->model->highlight_images = array_merge($this->model->highlight_images ?? [], $urls);
+            }
+        } else if ($this->fileInput instanceof \Illuminate\Http\UploadedFile) {
+            $url = $service->uploadFile($bucketId, $this->fileInput);
+            if ($url) {
+                if ($collectionName === 'image' || $collectionName === 'main_image') {
+                    $this->model->image_url = $url;
+                } elseif ($collectionName === 'avatar') {
+                    $this->model->avatar_url = $url;
+                }
+            }
+        }
+
+        $this->model->save();
     }
 }

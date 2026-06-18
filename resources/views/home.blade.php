@@ -295,8 +295,8 @@
         ];
         $lang = app()->getLocale();
         @endphp
-        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:1.5rem;">
-            @forelse($testimonials->take(3) as $testi)
+        <div class="testimonials-scroll-container">
+            @forelse($testimonials->take(15) as $testi)
             @php
                 $i       = $loop->index;
                 $review  = $testi->review;
