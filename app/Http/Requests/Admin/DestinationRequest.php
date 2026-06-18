@@ -14,7 +14,14 @@ class DestinationRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'country_id'       => 'nullable|exists:countries,id',
+            'country_id'       => [
+                'nullable',
+                function ($attribute, $value, $fail) {
+                    if (!\App\Models\Country::find($value)) {
+                        $fail(__('validation.exists', ['attribute' => 'country_id']));
+                    }
+                }
+            ],
             'name.ar'          => 'required|string|max:150',
             'name.en'          => 'required|string|max:150',
             'description.ar'   => 'required|string',

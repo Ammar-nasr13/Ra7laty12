@@ -21,7 +21,7 @@ class CountryController extends Controller
 
     public function store(CountryRequest $request)
     {
-        Country::create($request->validated() + ['is_active' => true]);
+        Country::create($request->validated());
 
         return redirect()->route('admin.countries.index')
             ->with('success', __('admin.country_created'));

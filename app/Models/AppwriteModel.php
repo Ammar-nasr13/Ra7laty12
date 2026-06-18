@@ -88,6 +88,16 @@ abstract class AppwriteModel implements UrlRoutable
             return $this->attributes['$id'] ?? null;
         }
 
+        if ($key === 'is_active') {
+            return $this->attributes['is_active'] ?? true;
+        }
+
+        // Handle Laravel accessor: getXXXAttribute
+        $accessor = 'get' . \Illuminate\Support\Str::studly($key) . 'Attribute';
+        if (method_exists($this, $accessor)) {
+            return $this->$accessor();
+        }
+
         // Handle Laravel translatable model logic
         if (isset($this->translatable) && in_array($key, $this->translatable)) {
             return $this->getTranslation($key, app()->getLocale());
@@ -181,6 +191,20 @@ abstract class AppwriteModel implements UrlRoutable
             $data = array_filter($this->attributes, function ($key) {
                 return strpos($key, '$') !== 0;
             }, ARRAY_FILTER_USE_KEY);
+
+            // Flatten translatable fields (e.g. name => ['ar' => 'X', 'en' => 'Y'] becomes name_ar => 'X', name_en => 'Y')
+            if (isset($this->translatable)) {
+                foreach ($this->translatable as $transKey) {
+                    if (isset($data[$transKey]) && is_array($data[$transKey])) {
+                        foreach ($data[$transKey] as $locale => $val) {
+                            $data["{$transKey}_{$locale}"] = $val;
+                            $this->attributes["{$transKey}_{$locale}"] = $val;
+                        }
+                        unset($data[$transKey]);
+                        unset($this->attributes[$transKey]);
+                    }
+                }
+            }
 
             // Normalize array attributes
             foreach ($data as $k => $v) {
@@ -297,6 +321,7 @@ class AppwriteQueryBuilder
     protected array $filterGroups = [[]]; // Array of groups, each group is an array of closures (AND conditions)
     protected array $withCountRelations = [];
     protected bool $distinct = false;
+    protected array $orders = [];
 
     public function __construct(string $collectionName, string $modelClass)
     {
@@ -340,25 +365,29 @@ class AppwriteQueryBuilder
             $operator = '=';
         }
 
-        // If it's a simple equality query and no in-memory filters or OR clauses exist yet, push to Appwrite queries
-        $isSimpleEquality = in_array($operator, ['=', '==']);
-        $hasNoInMemoryFilters = (count($this->filterGroups) === 1 && empty($this->filterGroups[0]));
+        // Try to add to Appwrite queries if it's a simple equality or comparison
+        $appwriteOperatorMap = [
+            '=' => 'equal',
+            '==' => 'equal',
+            '!=' => 'notEqual',
+            '<>' => 'notEqual',
+            '>' => 'greaterThan',
+            '>=' => 'greaterThanEqual',
+            '<' => 'lessThan',
+            '<=' => 'lessThanEqual',
+        ];
 
-        if ($isSimpleEquality && $hasNoInMemoryFilters) {
-            // Fallback: If filtering newsletter_subscribers by is_active, handle in memory
-            // as this attribute may not have been created by the user in Appwrite.
-            if ($this->collectionName === 'newsletter_subscribers' && $column === 'is_active') {
-                // fall through to in-memory filter
-            } else {
-                if ($column === 'id') {
-                    $column = '$id';
-                }
-                $this->queries[] = Query::equal($column, $value);
-                return $this;
+        $op = $appwriteOperatorMap[$operator] ?? null;
+        if ($op) {
+            $col = $column === 'id' ? '$id' : $column;
+            try {
+                $this->queries[] = Query::$op($col, $value);
+            } catch (\Exception $e) {
+                // ignore
             }
         }
 
-        // Otherwise, add to the current AND group for in-memory filtering
+        // Always add to the current AND group for in-memory filtering (fallback)
         $currentGroupIndex = count($this->filterGroups) - 1;
         $this->filterGroups[$currentGroupIndex][] = function ($model) use ($column, $operator, $value) {
             $modelVal = $model->$column;
@@ -506,11 +535,13 @@ class AppwriteQueryBuilder
      */
     public function orderBy(string $column, string $direction = 'asc'): self
     {
-        if (strtolower($direction) === 'desc') {
-            $this->queries[] = Query::orderDesc($column);
-        } else {
-            $this->queries[] = Query::orderAsc($column);
+        if ($column === 'id') {
+            $column = '$id';
         }
+        $this->orders[] = [
+            'column' => $column,
+            'direction' => strtolower($direction) === 'desc' ? 'desc' : 'asc'
+        ];
         return $this;
     }
 
@@ -553,7 +584,34 @@ class AppwriteQueryBuilder
     public function get(): Collection
     {
         $service = app(AppwriteService::class);
-        $documents = $service->list($this->collectionName, $this->queries);
+        
+        // Build the queries list for Appwrite.
+        // We only send queries to Appwrite if there are NO OR groups (i.e. count($filterGroups) === 1)
+        // because Appwrite queries are implicitly ANDed.
+        $queries = [];
+        if (count($this->filterGroups) <= 1) {
+            $queries = $this->queries;
+        }
+
+        $hasLimit = false;
+        foreach ($queries as $q) {
+            if (str_contains(json_encode($q), 'limit')) {
+                $hasLimit = true;
+            }
+        }
+        if (!$hasLimit) {
+            $queries[] = Query::limit(1000);
+        }
+
+        try {
+            $documents = $service->list($this->collectionName, $queries);
+        } catch (\Exception $e) {
+            // Fallback: fetch without filters/queries (except limit)
+            \Illuminate\Support\Facades\Log::warning("Appwrite list query failed for {$this->collectionName}: " . $e->getMessage() . ". Falling back to in-memory filtering.");
+            
+            $fallbackQueries = [Query::limit(1000)];
+            $documents = $service->list($this->collectionName, $fallbackQueries);
+        }
         
         $models = [];
         foreach ($documents as $doc) {
@@ -600,7 +658,40 @@ class AppwriteQueryBuilder
             }
         }
 
-        return collect($models);
+        $collection = collect($models);
+
+        if (!empty($this->orders)) {
+            $collection = $collection->sort(function ($a, $b) {
+                foreach ($this->orders as $order) {
+                    $col = $order['column'];
+                    $desc = $order['direction'] === 'desc';
+                    
+                    $valA = $a->$col;
+                    $valB = $b->$col;
+
+                    if ($valA === null && $valB !== null) {
+                        return $desc ? 1 : -1;
+                    }
+                    if ($valB === null && $valA !== null) {
+                        return $desc ? -1 : 1;
+                    }
+                    if ($valA == $valB) {
+                        continue;
+                    }
+
+                    if (is_string($valA) && is_string($valB)) {
+                        $cmp = strcasecmp($valA, $valB);
+                        return $desc ? -$cmp : $cmp;
+                    }
+
+                    $cmp = ($valA < $valB) ? -1 : 1;
+                    return $desc ? -$cmp : $cmp;
+                }
+                return 0;
+            })->values();
+        }
+
+        return $collection;
     }
 
     /**
@@ -754,8 +845,8 @@ class AppwriteQueryBuilder
     {
         $page = $page ?: LengthAwarePaginator::resolveCurrentPage($pageName);
         
-        // If we have in-memory filterGroups, we must evaluate the whole query, and then paginate manually
-        if (count($this->filterGroups) > 1 || !empty($this->filterGroups[0])) {
+        // If we have in-memory filterGroups or sorting, we must evaluate the whole query, and then paginate manually
+        if (count($this->filterGroups) > 1 || !empty($this->filterGroups[0]) || !empty($this->orders)) {
             $allResults = $this->get();
             $total = $allResults->count();
             $slice = $allResults->slice(($page - 1) * $perPage, $perPage)->values();

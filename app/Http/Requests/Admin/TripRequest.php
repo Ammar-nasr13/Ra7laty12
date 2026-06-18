@@ -16,7 +16,14 @@ class TripRequest extends FormRequest
         return [
             'title.ar'            => 'required|string|max:200',
             'title.en'            => 'required|string|max:200',
-            'destination_id'      => 'nullable|exists:destinations,id',
+            'destination_id'      => [
+                'nullable',
+                function ($attribute, $value, $fail) {
+                    if (!\App\Models\Destination::find($value)) {
+                        $fail(__('validation.exists', ['attribute' => 'destination_id']));
+                    }
+                }
+            ],
             'desc.ar'             => 'required|string',
             'desc.en'             => 'required|string',
             'highlights.ar'       => 'required|array|min:1',
