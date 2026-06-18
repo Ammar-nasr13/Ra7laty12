@@ -174,30 +174,35 @@ abstract class AppwriteModel implements UrlRoutable
      */
     public function save(): bool
     {
-        $service = self::getAppwriteService();
-        
-        // Filter out system attributes before saving
-        $data = array_filter($this->attributes, function ($key) {
-            return strpos($key, '$') !== 0;
-        }, ARRAY_FILTER_USE_KEY);
+        try {
+            $service = self::getAppwriteService();
+            
+            // Filter out system attributes before saving
+            $data = array_filter($this->attributes, function ($key) {
+                return strpos($key, '$') !== 0;
+            }, ARRAY_FILTER_USE_KEY);
 
-        // Normalize array attributes
-        foreach ($data as $k => $v) {
-            if (is_array($v)) {
-                $data[$k] = array_values($v);
+            // Normalize array attributes
+            foreach ($data as $k => $v) {
+                if (is_array($v)) {
+                    $data[$k] = array_values($v);
+                }
             }
-        }
 
-        if ($this->exists && isset($this->attributes['$id'])) {
-            $response = $service->update($this->collectionName, $this->attributes['$id'], $data);
-            $this->attributes = $response;
-            return true;
-        } else {
-            $id = $this->attributes['$id'] ?? null;
-            $response = $service->create($this->collectionName, $data, $id);
-            $this->attributes = $response;
-            $this->exists = true;
-            return true;
+            if ($this->exists && isset($this->attributes['$id'])) {
+                $response = $service->update($this->collectionName, $this->attributes['$id'], $data);
+                $this->attributes = $response;
+                return true;
+            } else {
+                $id = $this->attributes['$id'] ?? null;
+                $response = $service->create($this->collectionName, $data, $id);
+                $this->attributes = $response;
+                $this->exists = true;
+                return true;
+            }
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error("Appwrite save error in {$this->collectionName}: " . $e->getMessage());
+            return false;
         }
     }
 
